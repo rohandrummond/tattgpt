@@ -1,1 +1,7 @@
-<h1>hello world</h1>
+<h1>hello from app.component.html</h1>
+<div>
+    <button (click)="fetchData()">Fetch data</button>
+</div>
+<div *ngIf="data">
+    <p>Received data: {{ data }}</p>
+</div>
