@@ -32,3 +32,6 @@
 /Users/rohan/Documents/dev/tattgpt/server/dotnet/obj/Debug/net9.0/dotnet.pdb
 /Users/rohan/Documents/dev/tattgpt/server/dotnet/obj/Debug/net9.0/dotnet.genruntimeconfig.cache
 /Users/rohan/Documents/dev/tattgpt/server/dotnet/obj/Debug/net9.0/ref/dotnet.dll
+/Users/rohan/Documents/dev/tattgpt/server/dotnet/bin/Debug/net9.0/OpenAI.dll
+/Users/rohan/Documents/dev/tattgpt/server/dotnet/bin/Debug/net9.0/System.ClientModel.dll
+/Users/rohan/Documents/dev/tattgpt/server/dotnet/bin/Debug/net9.0/System.Memory.Data.dll

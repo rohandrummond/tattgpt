@@ -14,7 +14,7 @@ export class AppComponent {
   data: string = '';
   constructor(private http : HttpClient) {};
   fetchData() {
-    const apiUrl: string = 'http://localhost:5095/helloworld';
+    const apiUrl: string = 'http://localhost:5095';
     this.http.get(apiUrl, { responseType: 'text' }).subscribe({
       next: (response) => {
         this.data = response;
