@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using OpenAI.Chat;
 using System.Text.Json;
 
@@ -13,8 +14,8 @@ namespace TattGPT
             {
                 return;
             }
-            var response = GetTattooIdeas(client);
-            Console.WriteLine(response.RootElement.ToString());            
+            // var response = await GetTattooIdeas(client);
+            // Console.WriteLine(response.RootElement.ToString());            
             app.Run();
         }
         private static WebApplication ConfigureApp (string[] args)
@@ -32,13 +33,23 @@ namespace TattGPT
             var app = builder.Build();
             app.UseCors("AllowAngularApp");
             app.UseHttpsRedirection();
+            MapRoutes(app);
+            return app;
+        }
+        private static void MapRoutes (WebApplication app) 
+        {
             app.MapGet("/", () =>
             {
                 string response = "hello world";
                 return response;
             })
-            .WithName("HelloWorld");
-            return app;
+            .WithName("GET");
+            app.MapPost("/", ([FromBody] JsonDocument formData) =>
+            {
+                Console.WriteLine("POST endpoint being triggered. Data being received:");
+                Console.WriteLine(formData.RootElement.ToString());
+            })
+            .WithName("POST");
         }
         private static ChatClient? InitialiseOpenAI ()
         {
@@ -51,7 +62,7 @@ namespace TattGPT
             ChatClient client = new ChatClient(model: "gpt-4o-mini", apiKey: apiKey);
             return client;
         }
-        private static JsonDocument GetTattooIdeas (ChatClient client)
+        private static async Task<JsonDocument> GetTattooIdeas (ChatClient client)
         {
             List<ChatMessage> messages =
             [
@@ -85,7 +96,7 @@ namespace TattGPT
                     jsonSchemaIsStrict: true                
                 )
             };
-            ChatCompletion completion = client.CompleteChat(messages, options);
+            ChatCompletion completion = await client.CompleteChatAsync(messages, options);
             JsonDocument structuredJsonResponse = JsonDocument.Parse(completion.Content[0].Text);
             return structuredJsonResponse;
         }
