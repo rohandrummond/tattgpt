@@ -2,12 +2,14 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common'; 
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { LoaderComponent } from '../loader/loader.component';
 
 @Component({
   selector: 'app-idea-form',
   imports: [
     ReactiveFormsModule, 
-    CommonModule
+    CommonModule,
+    LoaderComponent
   ],
   templateUrl: './idea-form.component.html',
   styleUrls: ['./idea-form.component.css']
@@ -25,19 +27,22 @@ export class IdeaFormComponent {
     theme: new FormControl<String | null>(null)
   });
 
-  serverResponse: any;
+  serverResponse: JSON | null = null;
+  isLoading: boolean = false;
   
   onSubmit(event: Event) {
     console.log("onSubmit function being triggered");
     this.ideaForm.markAllAsTouched();
     if (this.ideaForm.valid) {
+      this.isLoading = true;
       console.log('Form Submitted');
       console.log(this.ideaForm.value);
       const apiUrl: string = 'https://localhost:7072';
-      this.http.post<any>(apiUrl, this.ideaForm.value).subscribe({
+      this.http.post<JSON>(apiUrl, this.ideaForm.value).subscribe({
         next: (response) => {
+          this.isLoading = false;
           this.serverResponse = response;
-          console.log('POST request successful. Server respponse: ', this.serverResponse);
+          console.log(this.serverResponse);
         },
         error: (e) => {
           console.error('Error fetching data: ', e)
