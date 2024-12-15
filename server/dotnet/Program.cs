@@ -45,20 +45,29 @@ namespace TattGPT
             app.MapGet("/", () =>
             {
                 Console.WriteLine("GET endpoint being triggered");
-                string response = "hello world";
-                return response;
             })
             .WithName("GET");
             app.MapPost("/", async (IdeaFormData ideaFormData) =>
             {
-                Console.WriteLine("POST endpoint being triggered.");
-                // if (ideaFormData == null)
-                // {
-                //     return Results.BadRequest("Invalid request body.");
-                // }
-                var response = await GenerateIdeas(client, ideaFormData);
-                Console.WriteLine(response.RootElement.ToString());            
-                // return data to Angular
+                try 
+                {
+                    Console.WriteLine("POST endpoint being triggered.");
+                    if (ideaFormData == null)
+                    {
+                        return Results.BadRequest(new { message = "No form data submitted "});
+                    }
+                    JsonDocument ideas = await GenerateIdeas(client, ideaFormData);
+                    if (ideas == null)
+                    {
+                        return Results.BadRequest(new { message = "Problem receiving data from OpenAI API"});
+                    }
+                    return Results.Ok(ideas);
+                } 
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred: {ex.Message}");
+                    return Results.StatusCode(500);
+                }
             })
             .WithName("POST");
         }
