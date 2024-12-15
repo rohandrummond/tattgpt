@@ -19,10 +19,10 @@ export class IdeaFormComponent {
   
   ideaForm = new FormGroup({
     style: new FormControl<String | null>(null, Validators.required),
-    color: new FormControl<Boolean | null>(null, Validators.required),
+    color: new FormControl<String | null>(null, Validators.required),
     area: new FormControl<String | null>(null, Validators.required),
     size: new FormControl<String | null>(null, Validators.required),
-    theme: new FormControl<String | null>(null, Validators.required)
+    theme: new FormControl<String | null>(null)
   });
 
   serverResponse: any;

@@ -6,18 +6,15 @@ namespace TattGPT
 {
     internal class API 
     {
+
+        // Main function
         private static void Main (string[] args)
         {
-            var app = ConfigureApp(args);
-            var client = InitialiseOpenAI();
-            if (client == null)
-            {
-                return;
-            }
-            // var response = await GetTattooIdeas(client);
-            // Console.WriteLine(response.RootElement.ToString());            
+            var app = ConfigureApp(args);        
             app.Run();
         }
+
+        // Configure .NET Web API 
         private static WebApplication ConfigureApp (string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -36,21 +33,37 @@ namespace TattGPT
             MapRoutes(app);
             return app;
         }
+
+        // Map API endpoints
         private static void MapRoutes (WebApplication app) 
         {
+            var client = InitialiseOpenAI();
+            if (client == null)
+            {
+                return;
+            }
             app.MapGet("/", () =>
             {
+                Console.WriteLine("GET endpoint being triggered");
                 string response = "hello world";
                 return response;
             })
             .WithName("GET");
-            app.MapPost("/", ([FromBody] JsonDocument formData) =>
+            app.MapPost("/", async (IdeaFormData ideaFormData) =>
             {
-                Console.WriteLine("POST endpoint being triggered. Data being received:");
-                Console.WriteLine(formData.RootElement.ToString());
+                Console.WriteLine("POST endpoint being triggered.");
+                // if (ideaFormData == null)
+                // {
+                //     return Results.BadRequest("Invalid request body.");
+                // }
+                var response = await GenerateIdeas(client, ideaFormData);
+                Console.WriteLine(response.RootElement.ToString());            
+                // return data to Angular
             })
             .WithName("POST");
         }
+
+        // Initialise connection with OpenAI API 
         private static ChatClient? InitialiseOpenAI ()
         {
             var apiKey = Environment.GetEnvironmentVariable("TATTGPT_API_KEY");
@@ -62,11 +75,33 @@ namespace TattGPT
             ChatClient client = new ChatClient(model: "gpt-4o-mini", apiKey: apiKey);
             return client;
         }
-        private static async Task<JsonDocument> GetTattooIdeas (ChatClient client)
+
+        // Prompt logic 
+        private static async Task<JsonDocument> GenerateIdeas (ChatClient client, IdeaFormData ideaFormData)
         {
+            var prompt = new List<string>
+            {
+                "Generate 3 classic tattoo ideas "
+            };
+            var promptDetails = new Dictionary<string, string?>
+            {
+                { "for a ", ideaFormData.Style},
+                { " tattoo, in ", ideaFormData.Color },
+                { ", suitable for a ", ideaFormData.Size },
+                { " size placement on the ", ideaFormData.Area },
+                { ". Incorporate the following theme or concept provided by the user: ", ideaFormData.Theme }
+            };
+            foreach (var  (label, value) in promptDetails)
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    prompt.Add($"{label}{value}");
+                }
+            }
+            string formattedPrompt = string.Join("", prompt) + ". Keep the designs versatile and open to personal interpretation, avoiding overly specific details.";
             List<ChatMessage> messages =
             [
-                new UserChatMessage("Come up with 3 tattoo ideas"),
+                new UserChatMessage(formattedPrompt),
             ];
             ChatCompletionOptions options = new()
             {
@@ -100,5 +135,21 @@ namespace TattGPT
             JsonDocument structuredJsonResponse = JsonDocument.Parse(completion.Content[0].Text);
             return structuredJsonResponse;
         }
+    }
+
+    // Define class for handling form data 
+    public class IdeaFormData
+    {
+        public string? Style { get; set;}
+        public string? Color { get; set;}
+        public string? Area { get; set;}
+        public string? Size { get; set;}
+        public string? Theme { get; set;}
+
+        public override string ToString()
+        {
+            return JsonSerializer.Serialize(this);
+        }
+    
     }
 }

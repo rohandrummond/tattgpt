@@ -2,8 +2,8 @@
 
     <label>Tattoo Style:</label>
     <label for="traditional"><input id="traditional" formControlName="style" type="radio" value="traditional">Traditional (Old School)</label>
-    <label for="neo-traditional"><input id="neo-traditional" formControlName="style" type="radio" value="neoTraditional">Neo-traditional</label>
-    <label for="japanese"><input id="japanese" formControlName="style" type="radio" value="japanese">Japanese (Irezumi)</label>
+    <label for="neo-traditional"><input id="neo-traditional" formControlName="style" type="radio" value="neo-traditional">Neo-traditional</label>
+    <label for="japanese"><input id="japanese" formControlName="style" type="radio" value="Japanese">Japanese (Irezumi)</label>
     <label for="realism"><input id="realism" formControlName="style" type="radio" value="realism">Realism</label>
     <label for="blackwork"><input id="blackwork" formControlName="style" type="radio" value="blackwork">Blackwork</label>
     <label for="geometric"><input id="geometric" formControlName="style" type="radio" value="geometric">Geometric</label>
@@ -14,8 +14,8 @@
     <br>
 
     <label>Color:</label>
-    <label for="color"><input id="color" formControlName="color" [value]="true" type="radio">Yes</label>
-    <label for="no-color"><input id="no-color" formControlName="color" [value]="false" type="radio">No</label>
+    <label for="color"><input id="color" formControlName="color" value="color" type="radio">Yes</label>
+    <label for="no-color"><input id="no-color" formControlName="color" value="black and grey" type="radio">No</label>
     <div *ngIf="ideaForm.get('color')?.hasError('required') && ideaForm.get('color')?.touched">
         <span style="color:red">Please select your colour preference.</span>
     </div> 
