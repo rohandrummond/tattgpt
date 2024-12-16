@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using OpenAI.Chat;
+using OpenAI.Images;
 using System.Text.Json;
 
 namespace TattGPT
@@ -37,8 +38,12 @@ namespace TattGPT
         // Map API endpoints
         private static void MapRoutes (WebApplication app) 
         {
-            var client = InitialiseOpenAI();
-            if (client == null)
+            var (chatClient, imageClient) = InitialiseOpenAI();
+            if (chatClient == null)
+            {
+                return;
+            }
+            if (imageClient == null)
             {
                 return;
             }
@@ -56,7 +61,7 @@ namespace TattGPT
                     {
                         return Results.BadRequest(new { message = "No form data submitted "});
                     }
-                    JsonDocument ideas = await GenerateIdeas(client, ideaFormData);
+                    JsonDocument ideas = await GenerateIdeas(chatClient, ideaFormData);
                     if (ideas == null)
                     {
                         return Results.BadRequest(new { message = "Problem receiving data from OpenAI API"});
@@ -73,16 +78,17 @@ namespace TattGPT
         }
 
         // Initialise connection with OpenAI API 
-        private static ChatClient? InitialiseOpenAI ()
+        private static(ChatClient?, ImageClient?) InitialiseOpenAI ()
         {
             var apiKey = Environment.GetEnvironmentVariable("TATTGPT_API_KEY");
             if (string.IsNullOrEmpty(apiKey))
             {
                 Console.WriteLine("API key is missing. Please set the TATTGPT_API_KEY environment variable.");
-                return null;
+                return (null, null);
             }
-            ChatClient client = new ChatClient(model: "gpt-4o-mini", apiKey: apiKey);
-            return client;
+            ChatClient chatClient = new ChatClient(model: "gpt-4o-mini", apiKey: apiKey);
+            ImageClient imageClient = new("dall-e-2", apiKey: apiKey);
+            return (chatClient, imageClient);
         }
 
         // Prompt logic 
