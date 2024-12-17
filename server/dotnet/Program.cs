@@ -52,11 +52,10 @@ namespace TattGPT
                 Console.WriteLine("GET endpoint being triggered");
             })
             .WithName("GET");
-            app.MapPost("/", async (IdeaFormData ideaFormData) =>
+            app.MapPost("/generate-ideas", async (IdeaFormData ideaFormData) =>
             {
                 try 
                 {
-                    Console.WriteLine("POST endpoint being triggered.");
                     if (ideaFormData == null)
                     {
                         return Results.BadRequest(new { message = "No form data submitted "});
@@ -74,7 +73,19 @@ namespace TattGPT
                     return Results.StatusCode(500);
                 }
             })
-            .WithName("POST");
+            .WithName("GenerateIdeas");
+            app.MapGet("/generate-image", async () => {
+                try 
+                {
+                    String image = await GenerateImage(imageClient);
+                    return Results.Ok(image);
+                }
+                catch (Exception ex) {
+                    Console.WriteLine($"An error occurred: {ex.Message}");
+                    return Results.StatusCode(500);
+                }
+            })
+            .WithName("GenerateImage");
         }
 
         // Initialise connection with OpenAI API 
@@ -91,7 +102,7 @@ namespace TattGPT
             return (chatClient, imageClient);
         }
 
-        // Prompt logic 
+        // Idea generation prompt logic
         private static async Task<JsonDocument> GenerateIdeas (ChatClient client, IdeaFormData ideaFormData)
         {
             var prompt = new List<string>
@@ -150,21 +161,36 @@ namespace TattGPT
             JsonDocument structuredJsonResponse = JsonDocument.Parse(completion.Content[0].Text);
             return structuredJsonResponse;
         }
-    }
 
-    // Define class for handling form data 
-    public class IdeaFormData
-    {
-        public string? Style { get; set;}
-        public string? Color { get; set;}
-        public string? Area { get; set;}
-        public string? Size { get; set;}
-        public string? Theme { get; set;}
-
-        public override string ToString()
+        private static async Task<String> GenerateImage (ImageClient client)
         {
-            return JsonSerializer.Serialize(this);
+            string prompt = "cartoon smiley face saying hello world";
+            ImageGenerationOptions options = new()
+            {
+                Size = GeneratedImageSize.W256xH256,
+                ResponseFormat = GeneratedImageFormat.Bytes
+            };
+            GeneratedImage image = await client.GenerateImageAsync(prompt, options);
+            BinaryData bytes = image.ImageBytes;
+            string base64 = Convert.ToBase64String(bytes.ToArray());
+            return base64;
         }
-    
-    }
+
+        // Define class for handling form data 
+        public class IdeaFormData
+        {
+            public string? Style { get; set;}
+            public string? Color { get; set;}
+            public string? Area { get; set;}
+            public string? Size { get; set;}
+            public string? Theme { get; set;}
+
+            public override string ToString()
+            {
+                return JsonSerializer.Serialize(this);
+            }
+        
+        }
+    };
+
 }

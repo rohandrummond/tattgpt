@@ -47,7 +47,7 @@ export class IdeaFormComponent {
       this.isLoading = true;
       console.log('Form Submitted');
       console.log(this.ideaForm.value);
-      const apiUrl: string = 'https://localhost:7072';
+      const apiUrl: string = 'https://localhost:7072/generate-ideas';
       this.http.post<Ideas>(apiUrl, this.ideaForm.value).subscribe({
         next: (response) => {
           this.isLoading = false;
