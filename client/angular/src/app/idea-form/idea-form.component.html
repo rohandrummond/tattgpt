@@ -1,5 +1,5 @@
 <app-loader [isLoading]="isLoading"></app-loader>
-<form [formGroup]="ideaForm" (ngSubmit)="onSubmit($event)">
+<form [formGroup]="ideaForm" (ngSubmit)="onSubmit()">
 
     <label>Tattoo Style:</label>
     <label for="traditional"><input id="traditional" formControlName="style" type="radio" value="traditional">Traditional (Old School)</label>

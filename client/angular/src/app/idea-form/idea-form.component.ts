@@ -8,6 +8,10 @@ import { LoaderComponent } from '../loader/loader.component';
 interface Idea {
   idea: string;
   description: string;
+  style: string;
+  size: string;
+  color: string;
+  placement: string;
 }
 
 interface Ideas {
@@ -40,7 +44,7 @@ export class IdeaFormComponent {
   serverResponse: Idea[] | null = null;
   isLoading: boolean = false;
   
-  onSubmit(event: Event) {
+  onSubmit() {
     console.log("onSubmit function being triggered");
     this.ideaForm.markAllAsTouched();
     if (this.ideaForm.valid) {

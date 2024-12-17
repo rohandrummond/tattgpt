@@ -2,4 +2,5 @@
 <div *ngFor="let concept of data">
     <p>{{ concept.idea }}</p>
     <p>{{ concept.description }}</p>
+    <button (click)="generateImage(concept)">Generate Image</button>
 </div>

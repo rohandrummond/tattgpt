@@ -112,7 +112,7 @@ namespace TattGPT
             var promptDetails = new Dictionary<string, string?>
             {
                 { "for a ", ideaFormData.Style},
-                { " tattoo, in ", ideaFormData.Color },
+                { " style tattoo, in ", ideaFormData.Color },
                 { ", suitable for a ", ideaFormData.Size },
                 { " size placement on the ", ideaFormData.Area },
                 { ". Incorporate the following theme or concept provided by the user: ", ideaFormData.Theme }
@@ -143,9 +143,13 @@ namespace TattGPT
                                     "type": "object",
                                     "properties": {
                                         "idea": { "type": "string" },
-                                        "description": { "type": "string" }
+                                        "description": { "type": "string" },
+                                        "style": { "type": "string" },
+                                        "size": { "type": "string" },
+                                        "color": { "type": "string" },
+                                        "placement": { "type": "string" }
                                     },
-                                    "required": ["idea", "description"],
+                                    "required": ["idea", "description", "style", "size", "color", "placement"],
                                     "additionalProperties": false
                                 }
                             }

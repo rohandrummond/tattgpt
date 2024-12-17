@@ -5,6 +5,10 @@ import { CommonModule } from '@angular/common';
 interface Idea {
   idea: string;
   description: string;
+  style: string;
+  size: string;
+  color: string;
+  placement: string;
 }
 
 @Component({
@@ -21,4 +25,7 @@ export class ResultsComponent {
     this.data = navigation?.extras?.state?.['data'];
     console.log(this.data);
   };
+  generateImage(idea: Idea) {
+    console.log(idea);
+  }
 }
