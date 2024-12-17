@@ -27,19 +27,16 @@ export class IdeaFormComponent {
     color: new FormControl<String | null>(null, Validators.required),
     area: new FormControl<String | null>(null, Validators.required),
     size: new FormControl<String | null>(null, Validators.required),
-    theme: new FormControl<String | null>(null)
+    themes: new FormControl<String | null>(null)
   });
 
   serverResponse: Idea[] | null = null;
   isLoading: boolean = false;
   
   onSubmit() {
-    console.log("onSubmit function being triggered");
     this.ideaForm.markAllAsTouched();
     if (this.ideaForm.valid) {
       this.isLoading = true;
-      console.log('Form Submitted');
-      console.log(this.ideaForm.value);
       const apiUrl: string = 'https://localhost:7072/generate-ideas';
       this.http.post<Ideas>(apiUrl, this.ideaForm.value).subscribe({
         next: (response) => {
@@ -55,5 +52,4 @@ export class IdeaFormComponent {
       console.log('Form is not valid');
     }
   }
-
 }

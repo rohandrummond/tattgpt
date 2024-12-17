@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
 export class HomeComponent {
   constructor(private http : HttpClient) {};
   base64String: string = '';
-  fetchData() {
+  generateIdeas() {
     const apiUrl: string = 'https://localhost:7072/generate-image';
     this.http.get(apiUrl, { responseType: 'text' }).subscribe({
       next: (response) => {

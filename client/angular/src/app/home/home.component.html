@@ -1,5 +1,5 @@
 <p>Hello from HomeComponent!</p>
-<button (click)="fetchData()">Click to fetch /generate-image</button>
+<button (click)="generateIdeas()">Click to fetch /generate-image</button>
 <div *ngIf="base64String">
     <p>Generated Image</p>
     <img [src]="'data:image/png;base64,' + base64String"/>

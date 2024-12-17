@@ -74,18 +74,31 @@ namespace TattGPT
                 }
             })
             .WithName("GenerateIdeas");
-            app.MapGet("/generate-image", async () => {
+            // app.MapGet("/generate-image", async () => {
+            //     try 
+            //     {
+            //         String image = await GenerateImage(imageClient);
+            //         return Results.Ok(image);
+            //     }
+            //     catch (Exception ex) {
+            //         Console.WriteLine($"An error occurred: {ex.Message}");
+            //         return Results.StatusCode(500);
+            //     }
+            // })
+            // .WithName("GenerateImageTest");
+            app.MapPost("/generate-image", /*async*/ (ImageGenerationData imageGenerationData) => {
                 try 
                 {
-                    String image = await GenerateImage(imageClient);
-                    return Results.Ok(image);
+                    string formattedJson = JsonSerializer.Serialize(imageGenerationData);
+                    Console.WriteLine(formattedJson);
+                    return Results.Ok();
                 }
                 catch (Exception ex) {
                     Console.WriteLine($"An error occurred: {ex.Message}");
                     return Results.StatusCode(500);
                 }
             })
-            .WithName("GenerateImage");
+            .WithName("GenerateImage");        
         }
 
         // Initialise connection with OpenAI API 
@@ -115,7 +128,7 @@ namespace TattGPT
                 { " style tattoo, in ", ideaFormData.Color },
                 { ", suitable for a ", ideaFormData.Size },
                 { " size placement on the ", ideaFormData.Area },
-                { ". Incorporate the following theme or concept provided by the user: ", ideaFormData.Theme }
+                { ". Incorporate the following theme or concept provided by the user: ", ideaFormData.Themes }
             };
             foreach (var  (label, value) in promptDetails)
             {
@@ -187,7 +200,7 @@ namespace TattGPT
             public string? Color { get; set;}
             public string? Area { get; set;}
             public string? Size { get; set;}
-            public string? Theme { get; set;}
+            public string? Themes { get; set;}
 
             public override string ToString()
             {
@@ -195,6 +208,22 @@ namespace TattGPT
             }
         
         }
+
+        // Define class for handling image generation data 
+        public class ImageGenerationData
+        {
+            public string? Idea { get; set;}
+            public string? Description { get; set;}
+            public string? Style { get; set;}
+            public string? Size { get; set;}
+            public string? Color { get; set;}   
+            public string? Placement { get; set;}        
+
+            public override string ToString()
+            {
+                return JsonSerializer.Serialize(this);
+            }
+        }
     };
 
-}
+}                          
