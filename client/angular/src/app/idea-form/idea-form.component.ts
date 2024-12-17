@@ -4,19 +4,8 @@ import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoaderComponent } from '../loader/loader.component';
-
-interface Idea {
-  idea: string;
-  description: string;
-  style: string;
-  size: string;
-  color: string;
-  placement: string;
-}
-
-interface Ideas {
-  tattooIdeas: Idea[];
-}
+import { Idea } from '../idea';
+import { Ideas } from '../ideas';
 
 @Component({
   selector: 'app-idea-form',

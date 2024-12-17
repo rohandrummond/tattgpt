@@ -1,15 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
-interface Idea {
-  idea: string;
-  description: string;
-  style: string;
-  size: string;
-  color: string;
-  placement: string;
-}
+import { Idea } from '../idea';
 
 @Component({
   selector: 'app-results',
