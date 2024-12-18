@@ -86,12 +86,13 @@ namespace TattGPT
             //     }
             // })
             // .WithName("GenerateImageTest");
-            app.MapPost("/generate-image", /*async*/ (ImageGenerationData imageGenerationData) => {
+            app.MapPost("/generate-image", async (ImageGenerationData imageGenerationData) => {
                 try 
                 {
                     string formattedJson = JsonSerializer.Serialize(imageGenerationData);
                     Console.WriteLine(formattedJson);
-                    return Results.Ok();
+                    string base64 = await GenerateImage(imageClient, imageGenerationData);
+                    return Results.Ok(base64);
                 }
                 catch (Exception ex) {
                     Console.WriteLine($"An error occurred: {ex.Message}");
@@ -179,15 +180,31 @@ namespace TattGPT
             return structuredJsonResponse;
         }
 
-        private static async Task<String> GenerateImage (ImageClient client)
+        private static async Task<String> GenerateImage (ImageClient client, ImageGenerationData imageGenerationData)
         {
-            string prompt = "cartoon smiley face saying hello world";
+            var prompt = new List<string?>
+            {
+                imageGenerationData.Style
+            };
+            var promptDetails = new Dictionary<string, string?>
+            {
+                { " style tattoo design in ", imageGenerationData.Color},
+                { ", suitable for a ", imageGenerationData.Size},
+                { " placement on the ", imageGenerationData.Placement},
+                { ". Here is a more detailed description of the tattoo: ", imageGenerationData.Description  }
+            };
+            foreach (var  (label, value) in promptDetails)
+            {
+                prompt.Add($"{label}{value}");
+            }
+            string formattedPrompt = string.Join("", prompt);
+            Console.WriteLine(formattedPrompt);
             ImageGenerationOptions options = new()
             {
                 Size = GeneratedImageSize.W256xH256,
                 ResponseFormat = GeneratedImageFormat.Bytes
             };
-            GeneratedImage image = await client.GenerateImageAsync(prompt, options);
+            GeneratedImage image = await client.GenerateImageAsync(formattedPrompt, options);
             BinaryData bytes = image.ImageBytes;
             string base64 = Convert.ToBase64String(bytes.ToArray());
             return base64;

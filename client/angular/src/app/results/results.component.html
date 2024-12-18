@@ -4,3 +4,7 @@
     <p>{{ concept.description }}</p>
     <button (click)="generateImage(concept)">Generate Image</button>
 </div>
+<div *ngIf="base64String">
+    <p>Generated Image</p>
+    <img [src]="'data:image/png;base64,' + base64String"/>
+</div>

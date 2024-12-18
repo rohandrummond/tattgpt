@@ -13,6 +13,7 @@ import { HttpClient } from '@angular/common/http';
 
 export class ResultsComponent {
   data: Idea[] | null = null; 
+  base64String: string = '';
   constructor(private http : HttpClient, private router : Router) {
     const navigation = this.router.getCurrentNavigation();
     this.data = navigation?.extras?.state?.['data'];
@@ -20,8 +21,9 @@ export class ResultsComponent {
   generateImage(idea: Idea) {
     const apiUrl: string = 'https://localhost:7072/generate-image';
     this.http.post<String>(apiUrl, idea).subscribe({
-      next: () => {
-        console.log("POST request was successful.")
+      next: (response) => {
+        console.log('Data fetched successfully');
+        this.base64String = response.replace(/['"]+/g, '');
       },
       error: (e) => {
         console.error('Error fetching data: ', e)
