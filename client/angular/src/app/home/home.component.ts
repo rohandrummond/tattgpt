@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
@@ -9,18 +8,55 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  constructor(private http : HttpClient) {};
-  base64String: string = '';
-  generateIdeas() {
-    const apiUrl: string = 'https://localhost:7072/generate-image';
-    this.http.get(apiUrl, { responseType: 'text' }).subscribe({
-      next: (response) => {
-        console.log('Data fetched successfully');
-        this.base64String = response.replace(/['"]+/g, '');
-      },
-      error: (e) => {
-        console.error('Error fetching data: ', e)
+
+  constructor(private renderer: Renderer2, private el: ElementRef) {}
+
+  ngOnInit() {
+
+    const firstHeading: HTMLElement = this.el.nativeElement.querySelector('#first-heading');
+    const firstHeadingContent: string = "Hello";
+    
+    const secondHeading: HTMLElement = this.el.nativeElement.querySelector('#second-heading');
+    const secondHeadingContent: string = "I'm TattGPT";
+  
+    const typingSpeed = 250; 
+    const deletingSpeed = 150; 
+    const delayBetweenWords = 1000; 
+    const delayBeforeSecondWord = 1000; 
+    
+    const typeWord = (element: HTMLElement, content: string, index: number, callback?: () => void) => {
+      if (index < content.length) {
+        element.textContent = content.substring(0, index + 1);
+        setTimeout(() => typeWord(element, content, index + 1, callback), typingSpeed);
+      } else if (callback) {
+        setTimeout(callback, delayBetweenWords);
       }
-    })
+    };
+
+    const deleteWord = (element: HTMLElement, callback?: () => void) => {
+      const content = element.textContent || "";
+      if (content.length > 0) {
+        element.textContent = content.substring(0, content.length - 1);
+        setTimeout(() => deleteWord(element, callback), deletingSpeed);
+      } else if (callback) {
+        callback();
+      }
+    };
+  
+    const startAnimation = () => {
+      firstHeading.style.display = "flex";
+      typeWord(firstHeading, firstHeadingContent, 0, () => {
+        deleteWord(firstHeading, () => {
+          firstHeading.style.display = "none";
+          setTimeout(() => {
+            secondHeading.style.display = "flex"; 
+            typeWord(secondHeading, secondHeadingContent, 0);
+          }, delayBeforeSecondWord);
+        });
+      });
+    };
+  
+    setTimeout(startAnimation, 1000);
   }
+  
 }
