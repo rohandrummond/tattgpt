@@ -14,10 +14,10 @@ export class HomeComponent {
   ngOnInit() {
 
     const firstHeading: HTMLElement = this.el.nativeElement.querySelector('#first-heading');
-    const firstHeadingContent: string = "Hello";
+    const firstHeadingContent: string = "Hello.";
     
     const secondHeading: HTMLElement = this.el.nativeElement.querySelector('#second-heading');
-    const secondHeadingContent: string = "I'm TattGPT";
+    const secondHeadingContent: string = "I'm TattGPT.";
   
     const typingSpeed = 250; 
     const deletingSpeed = 150; 
