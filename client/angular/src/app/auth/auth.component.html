@@ -1,3 +1,5 @@
 <div><span (click)="applyLogin()">Login</span><span (click)="applyRegister()">Register</span></div>
 <app-login-form *ngIf="formTemplate === 'login'"></app-login-form>
 <app-register-form *ngIf="formTemplate === 'register'"></app-register-form>
+<button (click)="signOut()">Signout</button>
+<button (click)="getUser()">Get user</button>
