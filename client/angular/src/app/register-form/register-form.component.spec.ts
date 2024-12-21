@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { IdeaFormComponent } from './idea-form.component';
 
-describe('IdeaFormComponent', () => {
-  
-  let component: IdeaFormComponent;
-  let fixture: ComponentFixture<IdeaFormComponent>;
+import { RegisterFormComponent } from './register-form.component';
+
+describe('RegisterFormComponent', () => {
+  let component: RegisterFormComponent;
+  let fixture: ComponentFixture<RegisterFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [IdeaFormComponent]
+      imports: [RegisterFormComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(IdeaFormComponent);
+    fixture = TestBed.createComponent(RegisterFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -20,5 +20,4 @@ describe('IdeaFormComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
 });

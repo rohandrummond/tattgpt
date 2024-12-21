@@ -33,7 +33,7 @@ export class IdeaFormComponent {
   serverResponse: Idea[] | null = null;
   isLoading: boolean = false;
   
-  onSubmit() {
+  onSubmit = () => {
     this.ideaForm.markAllAsTouched();
     if (this.ideaForm.valid) {
       this.isLoading = true;
