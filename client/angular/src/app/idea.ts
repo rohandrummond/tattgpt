@@ -5,4 +5,5 @@ export interface Idea {
     size: string;
     color: string;
     placement: string;
+    image?: string;
 }
