@@ -1,4 +1,100 @@
-/* You can add global styles to this file, and also import other style files */
+/* Defaults */
+
+html, body {
+    font-family: 'Geist', sans-serif;
+    background-color: #FFFDF9;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Utilities */
+
+.heading-lg {
+    font-size: 80px;
+    font-weight: 700;
+    letter-spacing: -2px;
+    margin: 0;
+    padding: 0;
+}
+
+.body-txt {
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.sub-txt {
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.full-vp {
+    height: 100dvh;
+    width: 100dvw;
+    box-sizing: border-box;
+}
+
+.flex {
+    display: flex;
+}
+
+.column {
+    flex-direction: column;
+}
+
+.row {
+    flex-direction: row;
+}
+
+.centered {
+    justify-content: center;
+    align-items: center;
+}
+
+.ctr {
+    margin: 0;
+    padding: 1vw;
+}
+
+/* Nav */
+
+.nav-ctr {
+    justify-content: end;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Home */
+
+.hero-ctr {
+    flex: 1;
+}
+
+.hero-hd {
+    display: none;
+}
+
+.hero-pg {
+    width: 360px;
+    position: absolute;
+    bottom: 1vw;
+    left: 1vw;
+    margin: 0;
+    padding: 0;
+}
+
+/* Fonts */
+
 @font-face {
     font-family: 'Geist';
     src: url('/assets/fonts/Geist-Black.woff2') format('woff2'),
@@ -46,15 +142,6 @@
 
 @font-face {
     font-family: 'Geist';
-    src: url('/assets/fonts/Geist-Light.woff2') format('woff2'),
-         url('/assets/fonts/Geist-Light.ttf') format('truetype'),
-         url('/assets/fonts/Geist-Light.otf') format('opentype');
-    font-weight: 300;
-    font-style: normal;
-}
-  
-@font-face {
-    font-family: 'Geist';
     src: url('/assets/fonts/Geist-Regular.woff2') format('woff2'),
          url('/assets/fonts/Geist-Regular.ttf') format('truetype'),
          url('/assets/fonts/Geist-Regular.otf') format('opentype');
@@ -62,6 +149,15 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Geist';
+    src: url('/assets/fonts/Geist-Light.woff2') format('woff2'),
+         url('/assets/fonts/Geist-Light.ttf') format('truetype'),
+         url('/assets/fonts/Geist-Light.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+}
+  
 @font-face {
     font-family: 'Geist';
     src: url('/assets/fonts/Geist-ExtraLight.woff2') format('woff2'),
@@ -78,32 +174,4 @@
          url('/assets/fonts/Geist-Thin.otf') format('opentype');
     font-weight: 100; 
     font-style: normal;
-}
-
-html, body {
-    font-family: 'Geist', sans-serif;
-    background-color: #FFFDF9;
-    margin: 0;
-    padding: 0;
-}
-
-h1 {
-    font-size: 80px;
-    font-weight: 700;
-    letter-spacing: -2px;
-    margin: 20px 30px;
-    padding: 0;
-}
-
-.full-vp-ctr {
-    height: 100vh;
-    width: 100vw;
-    margin: 0;
-    padding: 0;
-}
-
-.centered {
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
