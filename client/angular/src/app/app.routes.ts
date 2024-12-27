@@ -4,11 +4,13 @@ import { IdeaFormComponent } from './idea-form/idea-form.component';
 import { ResultsComponent } from './results/results.component';
 import { AuthComponent } from './auth/auth.component';
 import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent},
     { path: 'form', component: IdeaFormComponent},
     { path: 'results', component: ResultsComponent},
     { path: 'auth', component: AuthComponent},
-    { path: 'login', component: LoginComponent}
+    { path: 'login', component: LoginComponent},
+    { path: 'register', component: RegisterComponent}
 ]; 

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common'; 
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NavComponent } from '../nav/nav.component';
 import { LoaderComponent } from '../loader/loader.component';
 import { Idea } from '../idea';
 import { Ideas } from '../ideas';
@@ -12,7 +13,8 @@ import { Ideas } from '../ideas';
   imports: [
     ReactiveFormsModule, 
     CommonModule,
-    LoaderComponent
+    LoaderComponent,
+    NavComponent
   ],
   templateUrl: './idea-form.component.html',
   styleUrls: ['./idea-form.component.css']
