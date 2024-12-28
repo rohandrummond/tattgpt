@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { SupabaseService } from '../supabase.service';
+import { OpenAiService } from '../openai.service';
 import { NavComponent } from '../nav/nav.component';
 import { Idea } from '../idea';
-
 
 @Component({
   selector: 'app-results',
@@ -19,40 +18,34 @@ import { Idea } from '../idea';
 
 export class ResultsComponent {
 
-  data: Idea[] | null = null; 
-
+  data: Idea[] | null = null;
   base64String: string = '';
-
-  constructor(private http : HttpClient, private router : Router, public readonly supabase: SupabaseService) {
-    const navigation = this.router.getCurrentNavigation();
-    const navigationState = navigation?.extras?.state?.['data'];
-    if (!navigationState) {
-      this.router.navigate(['/']);
-    }
-    this.data = navigationState;
+  constructor(private http : HttpClient, public readonly supabase: SupabaseService, public openAiService : OpenAiService) {
   };
-
-  generateImage = (idea: Idea) => {
-    const apiUrl: string = 'https://localhost:7072/generate-image';
-    this.http.post<String>(apiUrl, idea).subscribe({
-      next: (response) => {
-        console.log('Data fetched successfully');
-        this.base64String = response.replace(/['"]+/g, '');
-        if (this.data) {
-          const index = this.data.findIndex(i => i === idea);
-          if (index !== -1) {
-            this.data[index] = { ...this.data[index], image: this.base64String };
-          }
+  ngOnInit(): void {
+    this.openAiService.ideasObservable.subscribe({
+      next: (ideas: Idea[] | null) => {
+        if (ideas) {
+          this.data = ideas;
         }
       },
-      error: (e) => {
-        console.error('Error fetching data: ', e)
+      error: (err) => {
+        console.error('Error fetching observable:', err);
       }
-    })
+    });
   }
-
+  generateImage = async (idea: Idea) => {
+    try {
+      const response: boolean = await this.openAiService.generateImage(idea)
+      if (response) {
+        console.log('Open AI Service indicating successful request.');
+        console.log(this.data)
+      }
+    } catch (e) {
+      console.error('Error occurred during Open AI Service request:', e);
+    }
+  }
   saveConcept = (idea: Idea) => {
     console.log(idea);
   }
-  
 }

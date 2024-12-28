@@ -4,10 +4,7 @@
         <p>{{ concept.idea }}</p>
         <p>{{ concept.description }}</p>
         <button (click)="generateImage(concept)">Generate Image</button>
+        <img *ngIf="concept.image" [src]="'data:image/png;base64,' + concept.image"/>
         <button (click)="saveConcept(concept)" *ngIf="(supabase.sessionObservable | async)">Save Image</button>
-    </div>
-    <div *ngIf="base64String">
-        <p>Generated Image</p>
-        <img [src]="'data:image/png;base64,' + base64String"/>
     </div>
 </div>

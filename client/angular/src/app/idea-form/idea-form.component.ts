@@ -3,10 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common'; 
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { OpenAiService } from '../openai.service';
 import { NavComponent } from '../nav/nav.component';
 import { LoaderComponent } from '../loader/loader.component';
-import { Idea } from '../idea';
-import { Ideas } from '../ideas';
 
 @Component({
   selector: 'app-idea-form',
@@ -22,7 +21,7 @@ import { Ideas } from '../ideas';
 
 export class IdeaFormComponent {
 
-  constructor(private http : HttpClient, private router : Router) {};
+  constructor(private http : HttpClient, private router : Router, private openAiService : OpenAiService) {};
   
   ideaForm = new FormGroup({
     style: new FormControl<String | null>(null, Validators.required),
@@ -32,26 +31,22 @@ export class IdeaFormComponent {
     themes: new FormControl<String | null>(null)
   });
 
-  serverResponse: Idea[] | null = null;
   isLoading: boolean = false;
   
-  onSubmit = () => {
+  onSubmit = async () => {
     this.ideaForm.markAllAsTouched();
+    this.isLoading = true;
     if (this.ideaForm.valid) {
-      this.isLoading = true;
-      const apiUrl: string = 'https://localhost:7072/generate-ideas';
-      this.http.post<Ideas>(apiUrl, this.ideaForm.value).subscribe({
-        next: (response) => {
+      try {
+        const response: boolean = await this.openAiService.generateIdeas(this.ideaForm.value)
+        if (response) {
           this.isLoading = false;
-          this.serverResponse = response.tattooIdeas;
-          this.router.navigate(['/results'], { state: { data: this.serverResponse } });
-        },
-        error: (e) => {
-          console.error('Error fetching data: ', e)
-        }    
-      });
-    } else {
-      console.log('Form is not valid');
+          this.router.navigate(['/results']);
+        }
+      } catch (e) {
+        console.error('Error occurred during API request:', e);
+      }
     }
   }
+
 }

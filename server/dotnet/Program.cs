@@ -74,23 +74,10 @@ namespace TattGPT
                 }
             })
             .WithName("GenerateIdeas");
-            // app.MapGet("/generate-image", async () => {
-            //     try 
-            //     {
-            //         String image = await GenerateImage(imageClient);
-            //         return Results.Ok(image);
-            //     }
-            //     catch (Exception ex) {
-            //         Console.WriteLine($"An error occurred: {ex.Message}");
-            //         return Results.StatusCode(500);
-            //     }
-            // })
-            // .WithName("GenerateImageTest");
             app.MapPost("/generate-image", async (ImageGenerationData imageGenerationData) => {
                 try 
                 {
                     string formattedJson = JsonSerializer.Serialize(imageGenerationData);
-                    Console.WriteLine(formattedJson);
                     string base64 = await GenerateImage(imageClient, imageGenerationData);
                     return Results.Ok(base64);
                 }
@@ -198,7 +185,6 @@ namespace TattGPT
                 prompt.Add($"{label}{value}");
             }
             string formattedPrompt = string.Join("", prompt);
-            Console.WriteLine(formattedPrompt);
             ImageGenerationOptions options = new()
             {
                 Size = GeneratedImageSize.W256xH256,
