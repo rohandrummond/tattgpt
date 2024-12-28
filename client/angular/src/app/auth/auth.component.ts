@@ -1,17 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LoginFormComponent } from '../login-form/login-form.component';
-import { RegisterFormComponent } from '../register-form/register-form.component';
 import { SupabaseService } from '../supabase.service';
 import { Session } from '@supabase/supabase-js';
 
 @Component({
   selector: 'app-auth',
-  imports: [
-    CommonModule,
-    LoginFormComponent,
-    RegisterFormComponent
-  ],
+  imports: [CommonModule],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css'
 })
