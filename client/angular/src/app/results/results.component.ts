@@ -5,6 +5,7 @@ import { SupabaseService } from '../supabase.service';
 import { OpenAiService } from '../openai.service';
 import { NavComponent } from '../nav/nav.component';
 import { Idea } from '../idea';
+import { Session } from '@supabase/supabase-js';
 
 @Component({
   selector: 'app-results',
@@ -17,16 +18,26 @@ import { Idea } from '../idea';
 })
 
 export class ResultsComponent {
-
-  data: Idea[] | null = null;
+  ideaData: Idea[] | null = null;
+  userData: Session | null = null;
   base64String: string = '';
-  constructor(private http : HttpClient, public readonly supabase: SupabaseService, public openAiService : OpenAiService) {
+  constructor(private http : HttpClient, public readonly supabaseService: SupabaseService, public openAiService : OpenAiService) {
   };
   ngOnInit(): void {
     this.openAiService.ideasObservable.subscribe({
       next: (ideas: Idea[] | null) => {
         if (ideas) {
-          this.data = ideas;
+          this.ideaData = ideas;
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching observable:', err);
+      }
+    });
+    this.supabaseService.sessionObservable.subscribe({
+      next: (session: Session | null) => {
+        if (session) {
+          this.userData = session;
         }
       },
       error: (err) => {
@@ -39,13 +50,21 @@ export class ResultsComponent {
       const response: boolean = await this.openAiService.generateImage(idea)
       if (response) {
         console.log('Open AI Service indicating successful request.');
-        console.log(this.data)
+        console.log(this.ideaData)
       }
     } catch (e) {
       console.error('Error occurred during Open AI Service request:', e);
     }
   }
-  saveConcept = (idea: Idea) => {
-    console.log(idea);
+  saveConcept = async (idea: Idea) => {
+    try {
+      idea.userId = this.userData?.user.id as string;
+      const response: boolean = await this.supabaseService.saveIdea(idea);
+      if (response) {
+        console.log('Supabase Service indicating successful insertion.');
+      }
+    } catch (e) {
+      console.error('Error occurred during Supabase Service request:', e);
+    }
   }
 }

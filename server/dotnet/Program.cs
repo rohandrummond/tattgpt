@@ -1,7 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 using OpenAI.Chat;
 using OpenAI.Images;
-using System.Text.Json;
+using Supabase;
+using Supabase.Postgrest.Attributes;
+using Supabase.Postgrest.Models;
 
 namespace TattGPT
 {
@@ -38,20 +40,15 @@ namespace TattGPT
         // Map API endpoints
         private static void MapRoutes (WebApplication app) 
         {
+
             var (chatClient, imageClient) = InitialiseOpenAI();
-            if (chatClient == null)
+            var supabaseClient = InitialiseSupabase();
+            if (chatClient == null || imageClient == null || supabaseClient == null)
             {
                 return;
             }
-            if (imageClient == null)
-            {
-                return;
-            }
-            app.MapGet("/", () =>
-            {
-                Console.WriteLine("GET endpoint being triggered");
-            })
-            .WithName("GET");
+
+            // Generate Ideas 
             app.MapPost("/generate-ideas", async (IdeaFormData ideaFormData) =>
             {
                 try 
@@ -74,11 +71,31 @@ namespace TattGPT
                 }
             })
             .WithName("GenerateIdeas");
-            app.MapPost("/generate-image", async (ImageGenerationData imageGenerationData) => {
+            
+            // Save Idea
+            app.MapPost("/save-idea", (IdeaData ideaData) => {
+                try
+                {
+                    if (ideaData == null)
+                    {
+                        return Results.BadRequest(new { message = "No idea data submitted "});
+                    }                
+                    SaveIdea(supabaseClient, ideaData);
+                    return Results.Ok();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred: {ex.Message}");
+                    return Results.StatusCode(500);
+                }
+            });
+
+            // Generate Images 
+            app.MapPost("/generate-image", async (IdeaData ideaData) => {
                 try 
                 {
-                    string formattedJson = JsonSerializer.Serialize(imageGenerationData);
-                    string base64 = await GenerateImage(imageClient, imageGenerationData);
+                    string formattedJson = JsonSerializer.Serialize(ideaData);
+                    string base64 = await GenerateImage(imageClient, ideaData);
                     return Results.Ok(base64);
                 }
                 catch (Exception ex) {
@@ -86,7 +103,7 @@ namespace TattGPT
                     return Results.StatusCode(500);
                 }
             })
-            .WithName("GenerateImage");        
+            .WithName("GenerateImage");   
         }
 
         // Initialise connection with OpenAI API 
@@ -101,6 +118,21 @@ namespace TattGPT
             ChatClient chatClient = new ChatClient(model: "gpt-4o-mini", apiKey: apiKey);
             ImageClient imageClient = new("dall-e-2", apiKey: apiKey);
             return (chatClient, imageClient);
+        }
+
+        // Initialise connection with Supabase API 
+        private static async Task<Client?> InitialiseSupabase()
+        {
+            var supabaseUrl = Environment.GetEnvironmentVariable("SUPABASE_URL");
+            var supabaseKey = Environment.GetEnvironmentVariable("SUPABASE_KEY");
+            if (string.IsNullOrEmpty(supabaseUrl) || string.IsNullOrEmpty(supabaseKey))
+            {
+                Console.WriteLine("Supabase API URL or Key is missing. Please set the relevant environment variable.");
+                return (null);            
+            }
+            var supabase = new Client(supabaseUrl, supabaseKey);
+            await supabase.InitializeAsync();
+            return supabase;
         }
 
         // Idea generation prompt logic
@@ -167,18 +199,19 @@ namespace TattGPT
             return structuredJsonResponse;
         }
 
-        private static async Task<String> GenerateImage (ImageClient client, ImageGenerationData imageGenerationData)
+        // Image generation prompt logic
+        private static async Task<String> GenerateImage (ImageClient client, IdeaData ideaData)
         {
             var prompt = new List<string?>
             {
-                imageGenerationData.Style
+                ideaData.Style
             };
             var promptDetails = new Dictionary<string, string?>
             {
-                { " style tattoo design in ", imageGenerationData.Color},
-                { ", suitable for a ", imageGenerationData.Size},
-                { " placement on the ", imageGenerationData.Placement},
-                { ". Here is a more detailed description of the tattoo: ", imageGenerationData.Description  }
+                { " style tattoo design in ", ideaData.Color},
+                { ", suitable for a ", ideaData.Size},
+                { " placement on the ", ideaData.Placement},
+                { ". Here is a more detailed description of the tattoo: ", ideaData.Description  }
             };
             foreach (var  (label, value) in promptDetails)
             {
@@ -196,6 +229,12 @@ namespace TattGPT
             return base64;
         }
 
+        // Save idea in Supabase 
+        private static void SaveIdea (Task<Client?> supabaseClient, IdeaData ideaData)
+        {
+            Console.WriteLine(ideaData);
+        }
+        
         // Define class for handling form data 
         public class IdeaFormData
         {
@@ -212,21 +251,52 @@ namespace TattGPT
         
         }
 
-        // Define class for handling image generation data 
-        public class ImageGenerationData
+        // Define class for handling idea data
+        public class IdeaData
         {
+            public string? UserId { get; set;}
             public string? Idea { get; set;}
             public string? Description { get; set;}
             public string? Style { get; set;}
             public string? Size { get; set;}
             public string? Color { get; set;}   
-            public string? Placement { get; set;}        
+            public string? Placement { get; set;}
+            public string? Image { get; set;}
 
             public override string ToString()
             {
                 return JsonSerializer.Serialize(this);
             }
         }
+
+        [Table("ideas")]
+        public class SupabaseIdeas : BaseModel
+        {
+            [PrimaryKey("id", false)]
+            public int Id { get; set; }
+
+            [Column("user_id")]
+            public required string UserId { get; set; }
+
+            [Column("idea")]
+            public required string Idea { get; set; }
+
+            [Column("description")]
+            public required string Description { get; set; }
+
+            [Column("placement")]
+            public required string Placement { get; set; }
+
+            [Column("color")]
+            public required string Color { get; set; }
+
+            [Column("size")]
+            public required string Size { get; set; }
+
+            [Column("image")]
+            public string? Image { get; set; }
+        }
+
     };
 
 }                          

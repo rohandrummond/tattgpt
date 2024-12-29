@@ -1,10 +1,10 @@
 <div class="full-vp flex column ctr">
     <app-nav></app-nav>
-    <div *ngFor="let concept of data">
+    <div *ngFor="let concept of ideaData">
         <p>{{ concept.idea }}</p>
         <p>{{ concept.description }}</p>
         <button (click)="generateImage(concept)">Generate Image</button>
         <img *ngIf="concept.image" [src]="'data:image/png;base64,' + concept.image"/>
-        <button (click)="saveConcept(concept)" *ngIf="(supabase.sessionObservable | async)">Save Image</button>
+        <button (click)="saveConcept(concept)" *ngIf="(supabaseService.sessionObservable | async)">Save Image</button>
     </div>
 </div>

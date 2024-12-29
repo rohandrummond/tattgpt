@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core'
-import { environment } from '../environments/environment'
 import { BehaviorSubject ,Observable } from 'rxjs'
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { environment } from '../environments/environment'
 import { createClient, SupabaseClient, Session, AuthChangeEvent } from '@supabase/supabase-js'
+import { Idea } from './idea'
 
 @Injectable({ providedIn: 'root' })
 
@@ -12,7 +14,7 @@ export class SupabaseService {
   private sessionSubject: BehaviorSubject<Session | null> = new BehaviorSubject<Session | null>(null);
   public sessionObservable: Observable<Session | null> = this.sessionSubject.asObservable();
 
-  constructor() {
+  constructor( private http: HttpClient ) {
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey)
     this.listenToAuthChanges();
   };
@@ -45,6 +47,23 @@ export class SupabaseService {
 
   signOut = () => {
     return this.supabase.auth.signOut();
+  };
+
+  saveIdea = (idea: Idea): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+      this.http.post<HttpResponse<any>>('https://localhost:7072/save-idea', idea, { observe: 'response' }).subscribe({
+        next: (response) => {
+          if (response.status === 200) {
+            resolve(true); 
+          } else {
+            reject("Failed to save idea")
+          }
+        },
+        error: (e) => {
+          reject('Failed to save idea: ' + e.message);
+        }
+      });
+    }); 
   };
 
 };
