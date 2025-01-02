@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Text.Json;
 using OpenAI.Chat;
 using OpenAI.Images;
@@ -43,8 +44,14 @@ namespace TattGPT
 
             var (chatClient, imageClient) = InitialiseOpenAI();
             var supabaseClient = InitialiseSupabase();
-            if (chatClient == null || imageClient == null || supabaseClient == null)
+            if (chatClient == null || imageClient == null)
             {
+                Console.WriteLine("Error initialising Open AI Client");
+                return;
+            }
+            if (supabaseClient == null)
+            {
+                Console.WriteLine("Error initialising Supabase Client");
                 return;
             }
 
@@ -73,14 +80,18 @@ namespace TattGPT
             .WithName("GenerateIdeas");
             
             // Save Idea
-            app.MapPost("/save-idea", (IdeaData ideaData) => {
+            app.MapPost("/save-idea", async (IdeaData ideaData) => {
                 try
                 {
                     if (ideaData == null)
                     {
                         return Results.BadRequest(new { message = "No idea data submitted "});
                     }                
-                    SaveIdea(supabaseClient, ideaData);
+                    bool result = await SaveIdea(await supabaseClient, ideaData);
+                    if (!result) 
+                    {
+                        return Results.StatusCode(500);
+                    }
                     return Results.Ok();
                 }
                 catch (Exception ex)
@@ -107,13 +118,12 @@ namespace TattGPT
         }
 
         // Initialise connection with OpenAI API 
-        private static(ChatClient?, ImageClient?) InitialiseOpenAI ()
+        private static(ChatClient, ImageClient) InitialiseOpenAI ()
         {
             var apiKey = Environment.GetEnvironmentVariable("TATTGPT_API_KEY");
             if (string.IsNullOrEmpty(apiKey))
             {
-                Console.WriteLine("API key is missing. Please set the TATTGPT_API_KEY environment variable.");
-                return (null, null);
+                throw new InvalidOperationException("API key is missing. Please set the TATTGPT_API_KEY environment variable.");
             }
             ChatClient chatClient = new ChatClient(model: "gpt-4o-mini", apiKey: apiKey);
             ImageClient imageClient = new("dall-e-2", apiKey: apiKey);
@@ -121,14 +131,13 @@ namespace TattGPT
         }
 
         // Initialise connection with Supabase API 
-        private static async Task<Client?> InitialiseSupabase()
+        private static async Task<Client> InitialiseSupabase()
         {
             var supabaseUrl = Environment.GetEnvironmentVariable("SUPABASE_URL");
-            var supabaseKey = Environment.GetEnvironmentVariable("SUPABASE_KEY");
+            var supabaseKey = Environment.GetEnvironmentVariable("SUPABASE_SERVICE_KEY");
             if (string.IsNullOrEmpty(supabaseUrl) || string.IsNullOrEmpty(supabaseKey))
             {
-                Console.WriteLine("Supabase API URL or Key is missing. Please set the relevant environment variable.");
-                return (null);            
+                throw new InvalidOperationException("Supabase API URL or Key is missing. Please set the relevant environment variable.");
             }
             var supabase = new Client(supabaseUrl, supabaseKey);
             await supabase.InitializeAsync();
@@ -230,9 +239,25 @@ namespace TattGPT
         }
 
         // Save idea in Supabase 
-        private static void SaveIdea (Task<Client?> supabaseClient, IdeaData ideaData)
+        private static async Task<Boolean> SaveIdea (Client supabaseClient, IdeaData ideaData)
         {
-            Console.WriteLine(ideaData);
+            var supabaseIdea = new SupabaseIdeaModel
+            {
+                UserId = ideaData.UserId ?? throw new ArgumentNullException("ideaData.UserID is missing"),
+                Idea = ideaData.Idea ?? throw new ArgumentNullException("ideaData.Idea is missing"),
+                Description = ideaData.Description ?? throw new ArgumentNullException("ideaData.Description is missing"),
+                Placement = ideaData.Placement ?? throw new ArgumentNullException("ideaData.Placement is missing"),
+                Color = ideaData.Color ?? throw new ArgumentNullException("ideaData.Color is missing"),
+                Size = ideaData.Size ?? throw new ArgumentNullException("ideaData.Size is missing"),
+                Image = ideaData.Image
+            };
+            var response = await supabaseClient.From<SupabaseIdeaModel>().Insert(supabaseIdea);
+            if (response.ResponseMessage?.IsSuccessStatusCode != true) 
+            {
+                Console.WriteLine("Failed to save idea to Supabase");
+                return false;
+            } 
+            return true;
         }
         
         // Define class for handling form data 
@@ -270,28 +295,28 @@ namespace TattGPT
         }
 
         [Table("ideas")]
-        public class SupabaseIdeas : BaseModel
+        public class SupabaseIdeaModel : BaseModel
         {
             [PrimaryKey("id", false)]
             public int Id { get; set; }
 
             [Column("user_id")]
-            public required string UserId { get; set; }
+            public string? UserId { get; set; }
 
             [Column("idea")]
-            public required string Idea { get; set; }
+            public string? Idea { get; set; }
 
             [Column("description")]
-            public required string Description { get; set; }
+            public string? Description { get; set; }
 
             [Column("placement")]
-            public required string Placement { get; set; }
+            public string? Placement { get; set; }
 
             [Column("color")]
-            public required string Color { get; set; }
+            public string? Color { get; set; }
 
             [Column("size")]
-            public required string Size { get; set; }
+            public string? Size { get; set; }
 
             [Column("image")]
             public string? Image { get; set; }
