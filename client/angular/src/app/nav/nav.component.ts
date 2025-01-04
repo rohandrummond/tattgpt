@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SupabaseService } from '../supabase.service';
+import { AuthRedirectService } from '../authredirect.service';
 
 @Component({
   selector: 'app-nav',
@@ -15,7 +16,14 @@ import { SupabaseService } from '../supabase.service';
 
 export class NavComponent {
 
-  constructor(public readonly supabase: SupabaseService) {}
+  constructor(private router: Router, public readonly supabase: SupabaseService, private authRedirectService: AuthRedirectService) {}
+
+  onSignInClick(): void {
+    if (this.router.url === '/results') {
+      this.authRedirectService.setRedirectUrl('/results');
+    }
+    this.router.navigate(['/login']);
+  }
 
   async signOut(): Promise<void> {
     try {

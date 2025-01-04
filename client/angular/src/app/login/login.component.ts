@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SupabaseService } from '../supabase.service';
+import { AuthRedirectService } from '../authredirect.service';
+import { firstValueFrom } from 'rxjs';
 import { NavComponent } from '../nav/nav.component';
 
 @Component({
@@ -10,7 +12,8 @@ import { NavComponent } from '../nav/nav.component';
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    NavComponent
+    NavComponent,
+    RouterLink
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -18,7 +21,11 @@ import { NavComponent } from '../nav/nav.component';
 
 export class LoginComponent {
 
-  constructor(private readonly supabase: SupabaseService, private router : Router) {}  
+  constructor(
+    private readonly supabase: SupabaseService, 
+    private router : Router,
+    private authRedirectService: AuthRedirectService
+  ) {};
 
   loginForm = new FormGroup({
     email: new FormControl<String | null>(null, Validators.required),
@@ -35,7 +42,9 @@ export class LoginComponent {
         alert(error.message)
       }
     } finally {
-      this.router.navigate(['/']);
+      const redirectUrl: string = await firstValueFrom(this.authRedirectService.redirectObservable); 
+      this.router.navigate([redirectUrl]);
+      this.authRedirectService.setRedirectUrl('/');
     }
   }
 }

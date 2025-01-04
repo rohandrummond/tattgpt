@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { SupabaseService } from '../supabase.service';
 import { OpenAiService } from '../openai.service';
+import { AuthRedirectService } from '../authredirect.service';
 import { NavComponent } from '../nav/nav.component';
 import { Idea } from '../idea';
 import { Session } from '@supabase/supabase-js';
@@ -21,8 +23,13 @@ export class ResultsComponent {
   ideaData: Idea[] | null = null;
   userData: Session | null = null;
   base64String: string = '';
-  constructor(private http : HttpClient, public readonly supabaseService: SupabaseService, public openAiService : OpenAiService) {
-  };
+  constructor(
+    private http : HttpClient, 
+    private router: Router, 
+    private authRedirectService: AuthRedirectService,
+    public readonly supabaseService: SupabaseService, 
+    public openAiService : OpenAiService
+  ) {};
   ngOnInit(): void {
     this.openAiService.ideasObservable.subscribe({
       next: (ideas: Idea[] | null) => {
@@ -45,7 +52,7 @@ export class ResultsComponent {
       }
     });
   }
-  generateImage = async (idea: Idea) => {
+  generateImage = async (idea: Idea): Promise<void> => {
     try {
       const response: boolean = await this.openAiService.generateImage(idea)
       if (response) {
@@ -56,7 +63,7 @@ export class ResultsComponent {
       console.error('Error occurred during Open AI Service request:', e);
     }
   }
-  saveConcept = async (idea: Idea) => {
+  saveConcept = async (idea: Idea): Promise<void> => {
     try {
       idea.userId = this.userData?.user.id as string;
       const response: boolean = await this.supabaseService.saveIdea(idea);
@@ -66,5 +73,9 @@ export class ResultsComponent {
     } catch (e) {
       console.error('Error occurred during Supabase Service request:', e);
     }
+  }
+  clickResultsAuthPrompt = (): void => {
+    this.authRedirectService.setRedirectUrl('/results');
+    this.router.navigate(['/login'])
   }
 }

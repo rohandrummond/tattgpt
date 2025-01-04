@@ -1,5 +1,5 @@
 <nav class="flex row nav-ctr">
-    <a routerLink="/login" class="body-txt" *ngIf="!(supabase.sessionObservable | async); else logout">Sign in</a>
+    <a class="body-txt" *ngIf="!(supabase.sessionObservable | async); else logout" (click)="onSignInClick()">Sign in</a>
     <a routerLink="/form" class="body-txt">Try me</a>
 </nav>
 <ng-template #logout>

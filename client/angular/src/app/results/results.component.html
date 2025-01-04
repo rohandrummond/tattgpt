@@ -5,6 +5,11 @@
         <p>{{ concept.description }}</p>
         <button (click)="generateImage(concept)">Generate Image</button>
         <img *ngIf="concept.image" [src]="'data:image/png;base64,' + concept.image"/>
-        <button (click)="saveConcept(concept)" *ngIf="(supabaseService.sessionObservable | async)">Save Image</button>
+        <ng-container *ngIf="(supabaseService.sessionObservable | async); else loginPrompt">
+            <button (click)="saveConcept(concept)">Save Image</button>
+        </ng-container>
+        <ng-template #loginPrompt>
+            <button (click)="clickResultsAuthPrompt()">Sign in to save</button>
+        </ng-template>
     </div>
 </div>
