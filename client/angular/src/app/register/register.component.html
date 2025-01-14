@@ -9,5 +9,6 @@
         <label for="password">Password</label>
         <input id="password" formControlName="password" type="text">
         <button type="submit">Submit</button>
+        <p *ngIf="registerError">{{ registerError }}</p>
     </form>
 </div>

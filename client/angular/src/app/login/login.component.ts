@@ -32,19 +32,23 @@ export class LoginComponent {
     password: new FormControl<String | null>(null, Validators.required),
   });
 
+  loginError: string | null = null;
+
   async onSubmit(): Promise<void> {
     try {
+      if (this.loginError != null) {
+        this.loginError = null;
+      }
       const { email, password } = this.loginForm.value as { email: string; password: string };
       const { error } = await this.supabase.signIn(email, password);
       if (error) throw error;
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(error.message)
-      }
-    } finally {
       const redirectUrl: string = await firstValueFrom(this.authRedirectService.redirectObservable); 
       this.router.navigate([redirectUrl]);
       this.authRedirectService.setRedirectUrl('/');
+    } catch (error) {
+      if (error instanceof Error) {
+        this.loginError = error.message;
+      }
     }
   }
 }

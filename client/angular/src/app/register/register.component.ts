@@ -32,19 +32,20 @@ export class RegisterComponent {
     password: new FormControl<String | null>(null, Validators.required),
   });
   
+  registerError: string | null = null;
+
   async onSubmit(): Promise<void> {
     try {
       const { username, email, password } = this.registerForm.value as { username: string; email: string; password: string };
-      const { error } = await this.supabase.signUp(username, email, password)
-      if (error) throw error
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(error.message)
-      }
-    } finally {
+      const { error } = await this.supabase.signUp(username, email, password);
+      if (error) throw error;
       const redirectUrl: string = await firstValueFrom(this.authRedirectService.redirectObservable); 
       this.router.navigate([redirectUrl]);
       this.authRedirectService.setRedirectUrl('/');
+    } catch (error) {
+      if (error instanceof Error) {
+        this.registerError = error.message;
+      }
     }
   }
 }

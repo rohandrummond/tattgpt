@@ -7,6 +7,9 @@
         <label for="password">Password</label>
         <input id="password" formControlName="password" type="text">
         <button type="submit">Submit</button>
+        <div *ngIf="loginError">
+            <p >{{ loginError }}</p>
+        </div>
     </form>
     <p>Don't have an account? Create one <a routerLink="/register">here</a></p>
 </div>
