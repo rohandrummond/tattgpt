@@ -3,10 +3,10 @@
     <div *ngFor="let concept of ideaData">
         <p>{{ concept.idea }}</p>
         <p>{{ concept.description }}</p>
-        <button (click)="generateImage(concept)">Generate Image</button>
+        <button (click)="generateImage(concept)" [disabled]="disableImageButtons[concept.idea]">Generate Image</button>
         <img *ngIf="concept.image" [src]="'data:image/png;base64,' + concept.image"/>
         <ng-container *ngIf="(supabaseService.sessionObservable | async); else loginPrompt">
-            <button (click)="saveConcept(concept)">Save Image</button>
+            <button (click)="saveConcept(concept)" [disabled]="disableSaveButtons[concept.idea]">Save Idea</button>
         </ng-container>
         <ng-template #loginPrompt>
             <button (click)="clickResultsAuthPrompt()">Sign in to save</button>

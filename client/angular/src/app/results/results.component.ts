@@ -22,7 +22,8 @@ import { Session } from '@supabase/supabase-js';
 export class ResultsComponent {
   ideaData: Idea[] | null = null;
   userData: Session | null = null;
-  base64String: string = '';
+  disableSaveButtons: { [name: string]: boolean} = {};
+  disableImageButtons: { [name: string]: boolean} = {};
   constructor(
     private http : HttpClient, 
     private router: Router, 
@@ -35,6 +36,10 @@ export class ResultsComponent {
       next: (ideas: Idea[] | null) => {
         if (ideas) {
           this.ideaData = ideas;
+          ideas.forEach((idea) => {
+            this.disableSaveButtons[idea.idea] = false;
+            this.disableImageButtons[idea.idea] = false;
+          })
         }
       },
       error: (err) => {
@@ -56,8 +61,7 @@ export class ResultsComponent {
     try {
       const response: boolean = await this.openAiService.generateImage(idea)
       if (response) {
-        console.log('Open AI Service indicating successful request.');
-        console.log(this.ideaData)
+        this.disableImageButtons[idea.idea] = true;
       }
     } catch (e) {
       console.error('Error occurred during Open AI Service request:', e);
@@ -68,7 +72,7 @@ export class ResultsComponent {
       idea.userId = this.userData?.user.id as string;
       const response: boolean = await this.supabaseService.saveIdea(idea);
       if (response) {
-        console.log('Supabase Service indicating successful insertion.');
+        this.disableSaveButtons[idea.idea] = true;
       }
     } catch (e) {
       console.error('Error occurred during Supabase Service request:', e);
