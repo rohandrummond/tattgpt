@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { BehaviorSubject ,Observable } from 'rxjs'
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { environment } from '../environments/environment'
 import { createClient, SupabaseClient, Session, AuthChangeEvent } from '@supabase/supabase-js'
 import { Idea } from './idea'
@@ -65,5 +65,22 @@ export class SupabaseService {
       });
     }); 
   };
+
+  appendImage = (idea: Idea): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+      this.http.post<HttpResponse<any>>('https://localhost:7072/append-image', idea, { observe: 'response' }).subscribe({
+          next: (response) => {
+            if (response.status === 200) {
+              resolve(true); 
+            } else {
+              reject("Failed to append image")
+            }
+          },
+          error: (e) => {
+            reject('Failed to append image: ' + e.message);
+          }
+      })
+    })
+  }
 
 };

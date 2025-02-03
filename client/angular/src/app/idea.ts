@@ -7,5 +7,4 @@ export interface Idea {
     color: string;
     placement: string;
     image?: string;
-
 }

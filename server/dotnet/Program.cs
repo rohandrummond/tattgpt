@@ -1,5 +1,7 @@
 using System.Buffers;
 using System.Text.Json;
+using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.AspNetCore.Mvc;
 using OpenAI.Chat;
 using OpenAI.Images;
 using Supabase;
@@ -101,7 +103,7 @@ namespace TattGPT
                 }
             });
 
-            // Generate Images 
+            // Generate Image
             app.MapPost("/generate-image", async (IdeaData ideaData) => {
                 try 
                 {
@@ -109,12 +111,33 @@ namespace TattGPT
                     string base64 = await GenerateImage(imageClient, ideaData);
                     return Results.Ok(base64);
                 }
-                catch (Exception ex) {
+                catch (Exception ex) 
+                {
                     Console.WriteLine($"An error occurred: {ex.Message}");
                     return Results.StatusCode(500);
                 }
             })
             .WithName("GenerateImage");   
+
+            // Append Image
+            app.MapPost("/append-image", (IdeaData ideaData) => {
+                if (ideaData.Image == null || ideaData.Idea == null) {
+                    return Results.BadRequest(new { message = "Missing name or image field for idea"});
+                }
+                string ideaName = ideaData.Image;
+                string ideaImage = ideaData.Idea;
+                try
+                {
+                    // Fetch ID of Supabase idea based on name
+                    // Pass ID to update method and update image field
+                    return Results.Ok();
+                }
+                catch 
+                {
+                    return Results.StatusCode(500);
+                }
+            })
+            .WithName("AppendImage");
         }
 
         // Initialise connection with OpenAI API 
@@ -258,6 +281,14 @@ namespace TattGPT
                 return false;
             } 
             return true;
+        }
+
+        // Append image to idea in Supabase
+        private static void AppendImage (Client supabaseClient, String image)
+        {
+            Console.WriteLine("/append-image endpoint being requested");
+            Console.WriteLine("base64 string provided for image is:");
+            Console.WriteLine(image);
         }
         
         // Define class for handling form data 
