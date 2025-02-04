@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using OpenAI.Chat;
 using OpenAI.Images;
 using Supabase;
+using Supabase.Postgrest;
 using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
 
@@ -89,12 +90,12 @@ namespace TattGPT
                     {
                         return Results.BadRequest(new { message = "No idea data submitted "});
                     }                
-                    bool result = await SaveIdea(await supabaseClient, ideaData);
-                    if (!result) 
+                    var response = await SaveIdea(await supabaseClient, ideaData);
+                    if (response == null) 
                     {
                         return Results.StatusCode(500);
                     }
-                    return Results.Ok();
+                    return Results.Ok(response);
                 }
                 catch (Exception ex)
                 {
@@ -120,16 +121,13 @@ namespace TattGPT
             .WithName("GenerateImage");   
 
             // Append Image
-            app.MapPost("/append-image", (IdeaData ideaData) => {
-                if (ideaData.Image == null || ideaData.Idea == null) {
-                    return Results.BadRequest(new { message = "Missing name or image field for idea"});
-                }
-                string ideaName = ideaData.Image;
-                string ideaImage = ideaData.Idea;
+            app.MapPost("/append-image", async (AppendedImage appendedImage) => {
                 try
                 {
-                    // Fetch ID of Supabase idea based on name
-                    // Pass ID to update method and update image field
+                    Boolean result = await AppendImage(await supabaseClient, appendedImage);
+                    if (!result) {
+                        return Results.StatusCode(500);
+                    }
                     return Results.Ok();
                 }
                 catch 
@@ -154,7 +152,7 @@ namespace TattGPT
         }
 
         // Initialise connection with Supabase API 
-        private static async Task<Client> InitialiseSupabase()
+        private static async Task<Supabase.Client> InitialiseSupabase()
         {
             var supabaseUrl = Environment.GetEnvironmentVariable("SUPABASE_URL");
             var supabaseKey = Environment.GetEnvironmentVariable("SUPABASE_SERVICE_KEY");
@@ -162,7 +160,7 @@ namespace TattGPT
             {
                 throw new InvalidOperationException("Supabase API URL or Key is missing. Please set the relevant environment variable.");
             }
-            var supabase = new Client(supabaseUrl, supabaseKey);
+            var supabase = new Supabase.Client(supabaseUrl, supabaseKey);
             await supabase.InitializeAsync();
             return supabase;
         }
@@ -262,7 +260,7 @@ namespace TattGPT
         }
 
         // Save idea in Supabase 
-        private static async Task<Boolean> SaveIdea (Client supabaseClient, IdeaData ideaData)
+        private static async Task<int?> SaveIdea (Supabase.Client supabaseClient, IdeaData ideaData)
         {
             var supabaseIdea = new SupabaseIdeaModel
             {
@@ -274,55 +272,61 @@ namespace TattGPT
                 Size = ideaData.Size ?? throw new ArgumentNullException("ideaData.Size is missing"),
                 Image = ideaData.Image
             };
-            var response = await supabaseClient.From<SupabaseIdeaModel>().Insert(supabaseIdea);
+            var response = await supabaseClient
+                .From<SupabaseIdeaModel>()
+                .Insert(supabaseIdea, new QueryOptions { Returning = QueryOptions.ReturnType.Representation });
+            if (response.ResponseMessage?.IsSuccessStatusCode != true) 
+            {
+                Console.WriteLine("Failed to save idea to Supabase");
+                return null;
+            } 
+            int insertedModelId = response.Models[0].Id;
+            return insertedModelId;
+        }
+
+        // Append image to idea in Supabase
+        private static async Task<Boolean> AppendImage (Supabase.Client supabaseClient, AppendedImage appendedImage)
+        {
+            var response = await supabaseClient
+                .From<SupabaseIdeaModel>()
+                .Where(x => x.Id == appendedImage.IdeaId)
+                .Set(x => x.Image, appendedImage.Image)
+                .Update();
             if (response.ResponseMessage?.IsSuccessStatusCode != true) 
             {
                 Console.WriteLine("Failed to save idea to Supabase");
                 return false;
-            } 
+            }
             return true;
-        }
-
-        // Append image to idea in Supabase
-        private static void AppendImage (Client supabaseClient, String image)
-        {
-            Console.WriteLine("/append-image endpoint being requested");
-            Console.WriteLine("base64 string provided for image is:");
-            Console.WriteLine(image);
         }
         
         // Define class for handling form data 
         public class IdeaFormData
         {
-            public string? Style { get; set;}
-            public string? Color { get; set;}
-            public string? Area { get; set;}
-            public string? Size { get; set;}
-            public string? Themes { get; set;}
-
-            public override string ToString()
-            {
-                return JsonSerializer.Serialize(this);
-            }
-        
+            public string? Style { get; set; }
+            public string? Color { get; set; }
+            public string? Area { get; set; }
+            public string? Size { get; set; }
+            public string? Themes { get; set; }       
         }
 
         // Define class for handling idea data
         public class IdeaData
         {
-            public string? UserId { get; set;}
-            public string? Idea { get; set;}
-            public string? Description { get; set;}
-            public string? Style { get; set;}
-            public string? Size { get; set;}
-            public string? Color { get; set;}   
-            public string? Placement { get; set;}
-            public string? Image { get; set;}
+            public string? UserId { get; set; }
+            public string? Idea { get; set; }
+            public string? Description { get; set; }
+            public string? Style { get; set; }
+            public string? Size { get; set; }
+            public string? Color { get; set; }   
+            public string? Placement { get; set; }
+            public string? Image { get; set; }
+        }
 
-            public override string ToString()
-            {
-                return JsonSerializer.Serialize(this);
-            }
+        public class AppendedImage
+        {
+            public required int IdeaId { get; set; }
+            public required string Image { get; set; }
         }
 
         [Table("ideas")]

@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { environment } from '../environments/environment'
 import { createClient, SupabaseClient, Session, AuthChangeEvent } from '@supabase/supabase-js'
 import { Idea } from './idea'
+import { AppendedImage } from './appended-image';
 
 @Injectable({ providedIn: 'root' })
 
@@ -49,12 +50,13 @@ export class SupabaseService {
     return this.supabase.auth.signOut();
   };
 
-  saveIdea = (idea: Idea): Promise<boolean> => {
+  saveIdea = (idea: Idea): Promise<number> => {
     return new Promise((resolve, reject) => {
-      this.http.post<HttpResponse<any>>('https://localhost:7072/save-idea', idea, { observe: 'response' }).subscribe({
+      this.http.post<number>('https://localhost:7072/save-idea', idea, { observe: 'response' }).subscribe({
         next: (response) => {
-          if (response.status === 200) {
-            resolve(true); 
+          const insertedId: number | null = response.body;
+          if (response.status === 200 && insertedId != null ) {
+            resolve(insertedId); 
           } else {
             reject("Failed to save idea")
           }
@@ -66,9 +68,9 @@ export class SupabaseService {
     }); 
   };
 
-  appendImage = (idea: Idea): Promise<boolean> => {
+  appendImage = (appendedImage: AppendedImage): Promise<boolean> => {
     return new Promise((resolve, reject) => {
-      this.http.post<HttpResponse<any>>('https://localhost:7072/append-image', idea, { observe: 'response' }).subscribe({
+      this.http.post<any>('https://localhost:7072/append-image', appendedImage, { observe: 'response' }).subscribe({
           next: (response) => {
             if (response.status === 200) {
               resolve(true); 
@@ -82,5 +84,5 @@ export class SupabaseService {
       })
     })
   }
-
+  
 };

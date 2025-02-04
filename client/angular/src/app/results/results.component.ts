@@ -8,6 +8,7 @@ import { AuthRedirectService } from '../authredirect.service';
 import { NavComponent } from '../nav/nav.component';
 import { Idea } from '../idea';
 import { Session } from '@supabase/supabase-js';
+import { AppendedImage } from '../appended-image';
 
 @Component({
   selector: 'app-results',
@@ -23,7 +24,7 @@ export class ResultsComponent {
 
   ideaData: Idea[] | null = null;
   userData: Session | null = null;
-  trackSavedIdeas: { [name: string]: boolean} = {};
+  trackSavedIdeas: { [name: string]: number } = {};
   disableSaveButtons: { [name: string]: boolean} = {};
   disableImageButtons: { [name: string]: boolean} = {};
 
@@ -42,7 +43,6 @@ export class ResultsComponent {
           this.ideaData = ideas;
           if (!Object.keys(this.disableSaveButtons).length && !Object.keys(this.disableImageButtons).length) {
             ideas.forEach((idea) => {
-              this.trackSavedIdeas[idea.idea] = false;
               this.disableSaveButtons[idea.idea] = false;
               this.disableImageButtons[idea.idea] = false;
             })
@@ -66,7 +66,6 @@ export class ResultsComponent {
   }
 
   generateImage = async (idea: Idea): Promise<void> => {
-    console.log('generateImage function being triggered.')
     try {
       const response: boolean = await this.openAiService.generateImage(idea)
       if (response) {
@@ -81,15 +80,12 @@ export class ResultsComponent {
   }
 
   saveConcept = async (idea: Idea): Promise<void> => {
-    console.log('saveConcept function being triggered.')
-    if (this.trackSavedIdeas[idea.idea] === false) {
+    if (!this.trackSavedIdeas.hasOwnProperty(idea.idea)) {
       try {
         idea.userId = this.userData?.user.id as string;
-        const response: boolean = await this.supabaseService.saveIdea(idea);
-        if (response) {
-          this.trackSavedIdeas[idea.idea] = true;
-          this.disableSaveButtons[idea.idea] = true;
-        }
+        const response: number = await this.supabaseService.saveIdea(idea);
+        this.trackSavedIdeas[idea.idea] = response;
+        this.disableSaveButtons[idea.idea] = true;
       } catch (e) {
         console.error('Error occurred during Supabase Service request:', e);
       }
@@ -98,7 +94,11 @@ export class ResultsComponent {
         if (!idea.image) {
           throw 'No base64 string available for image' 
         }
-        const response: boolean = await this.supabaseService.appendImage(idea);
+        const appendedImage: AppendedImage = {
+          ideaId: this.trackSavedIdeas[idea.idea],
+          image: idea.image 
+        }
+        const response: boolean = await this.supabaseService.appendImage(appendedImage);
         if (response) {
           this.disableSaveButtons[idea.idea] = true;
         }
