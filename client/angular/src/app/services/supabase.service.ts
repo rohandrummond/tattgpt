@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core'
 import { BehaviorSubject ,Observable } from 'rxjs'
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { environment } from '../environments/environment'
+import { environment } from '../../environments/environment';
 import { createClient, SupabaseClient, Session, AuthChangeEvent } from '@supabase/supabase-js'
-import { Idea } from './idea'
-import { AppendedImage } from './appended-image';
+import { Idea } from '../interfaces/idea';
+import { AppendedImage } from '../interfaces/appended-image';
 
 @Injectable({ providedIn: 'root' })
 

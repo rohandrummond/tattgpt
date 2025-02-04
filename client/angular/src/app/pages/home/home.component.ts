@@ -1,6 +1,6 @@
 import { Component, ElementRef, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavComponent } from '../nav/nav.component';
+import { NavComponent } from '../../components/nav/nav.component';
 
 @Component({
   selector: 'app-home',

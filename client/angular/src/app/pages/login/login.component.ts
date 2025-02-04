@@ -1,24 +1,25 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { SupabaseService } from '../supabase.service';
-import { AuthRedirectService } from '../authredirect.service';
-import { NavComponent } from '../nav/nav.component';
+import { Router, RouterLink } from '@angular/router';
+import { SupabaseService } from '../../services/supabase.service';
+import { AuthRedirectService } from '../../services/authredirect.service';
 import { firstValueFrom } from 'rxjs';
+import { NavComponent } from '../../components/nav/nav.component';
 
 @Component({
-  selector: 'app-register-form',
+  selector: 'app-login-form',
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    NavComponent
+    NavComponent,
+    RouterLink
   ],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css'
 })
 
-export class RegisterComponent {
+export class LoginComponent {
 
   constructor(
     private readonly supabase: SupabaseService, 
@@ -26,25 +27,27 @@ export class RegisterComponent {
     private authRedirectService: AuthRedirectService
   ) {};
 
-  registerForm = new FormGroup({
-    username: new FormControl<String | null>(null, Validators.required),
+  loginForm = new FormGroup({
     email: new FormControl<String | null>(null, Validators.required),
     password: new FormControl<String | null>(null, Validators.required),
   });
-  
-  registerError: string | null = null;
+
+  loginError: string | null = null;
 
   async onSubmit(): Promise<void> {
     try {
-      const { username, email, password } = this.registerForm.value as { username: string; email: string; password: string };
-      const { error } = await this.supabase.signUp(username, email, password);
+      if (this.loginError != null) {
+        this.loginError = null;
+      }
+      const { email, password } = this.loginForm.value as { email: string; password: string };
+      const { error } = await this.supabase.signIn(email, password);
       if (error) throw error;
       const redirectUrl: string = await firstValueFrom(this.authRedirectService.redirectObservable); 
       this.router.navigate([redirectUrl]);
       this.authRedirectService.setRedirectUrl('/');
     } catch (error) {
       if (error instanceof Error) {
-        this.registerError = error.message;
+        this.loginError = error.message;
       }
     }
   }

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AuthRedirectService } from './authredirect.service';
+import { AuthRedirectService } from '../authredirect.service';
 
 describe('AuthredirectService', () => {
   let service: AuthRedirectService;

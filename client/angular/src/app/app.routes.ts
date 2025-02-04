@@ -1,16 +1,14 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { IdeaFormComponent } from './idea-form/idea-form.component';
-import { ResultsComponent } from './results/results.component';
-import { AuthComponent } from './auth/auth.component';
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
+import { HomeComponent } from './pages/home/home.component';
+import { LoginComponent } from './pages/login/login.component';
+import { RegisterComponent } from './pages/register/register.component';
+import { IdeaFormComponent } from './pages/idea-form/idea-form.component';
+import { ResultsComponent } from './pages/results/results.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent},
-    { path: 'form', component: IdeaFormComponent},
-    { path: 'results', component: ResultsComponent},
-    { path: 'auth', component: AuthComponent},
     { path: 'login', component: LoginComponent},
-    { path: 'register', component: RegisterComponent}
+    { path: 'register', component: RegisterComponent},
+    { path: 'form', component: IdeaFormComponent},
+    { path: 'results', component: ResultsComponent}
 ]; 

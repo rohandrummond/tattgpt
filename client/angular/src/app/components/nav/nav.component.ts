@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { SupabaseService } from '../supabase.service';
-import { AuthRedirectService } from '../authredirect.service';
+import { SupabaseService } from '../../services/supabase.service';
+import { AuthRedirectService } from '../../services/authredirect.service';
 
 @Component({
   selector: 'app-nav',

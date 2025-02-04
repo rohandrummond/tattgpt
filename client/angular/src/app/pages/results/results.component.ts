@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { SupabaseService } from '../supabase.service';
-import { OpenAiService } from '../openai.service';
-import { AuthRedirectService } from '../authredirect.service';
-import { NavComponent } from '../nav/nav.component';
-import { Idea } from '../idea';
+import { SupabaseService } from '../../services/supabase.service';
 import { Session } from '@supabase/supabase-js';
-import { AppendedImage } from '../appended-image';
+import { OpenAiService } from '../../services/openai.service';
+import { AuthRedirectService } from '../../services/authredirect.service';
+import { Idea } from '../../interfaces/idea';
+import { AppendedImage } from '../../interfaces/appended-image';
+import { NavComponent } from '../../components/nav/nav.component';
 
 @Component({
   selector: 'app-results',

@@ -3,9 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common'; 
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { OpenAiService } from '../openai.service';
-import { NavComponent } from '../nav/nav.component';
-import { LoaderComponent } from '../loader/loader.component';
+import { OpenAiService } from '../../services/openai.service';
+import { NavComponent } from '../../components/nav/nav.component';
+import { LoaderComponent } from '../../components/loader/loader.component';
 
 @Component({
   selector: 'app-idea-form',
