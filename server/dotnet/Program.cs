@@ -97,6 +97,15 @@ namespace TattGPT
                     }
                     return Results.Ok(response);
                 }
+                catch (Supabase.Postgrest.Exceptions.PostgrestException ex)
+                {
+                    Console.WriteLine($"An error occurred: {ex.Message}");
+                    if (ex.StatusCode == 409) 
+                    {
+                        return Results.StatusCode(409);
+                    }
+                    return Results.StatusCode(500);
+                }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"An error occurred: {ex.Message}");
@@ -108,7 +117,6 @@ namespace TattGPT
             app.MapPost("/generate-image", async (IdeaData ideaData) => {
                 try 
                 {
-                    string formattedJson = JsonSerializer.Serialize(ideaData);
                     string base64 = await GenerateImage(imageClient, ideaData);
                     return Results.Ok(base64);
                 }

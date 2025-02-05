@@ -27,7 +27,6 @@ export class OpenAiService {
           response.tattooIdeas.forEach((idea) => {
             idea.idea = this.toSentenceCase(idea.idea)
           });
-          console.log(response.tattooIdeas);
           this.ideasSubject.next(response.tattooIdeas);
           resolve(true); 
         },

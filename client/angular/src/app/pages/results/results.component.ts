@@ -22,9 +22,10 @@ import { NavComponent } from '../../components/nav/nav.component';
 
 export class ResultsComponent {
 
+  userData: Session | null = null;  
   ideaData: Idea[] | null = null;
-  userData: Session | null = null;
   trackSavedIdeas: { [name: string]: number } = {};
+  trackErrors: { [name: string]: string } = {};
   disableSaveButtons: { [name: string]: boolean} = {};
   disableImageButtons: { [name: string]: boolean} = {};
 
@@ -87,7 +88,13 @@ export class ResultsComponent {
         this.trackSavedIdeas[idea.idea] = response;
         this.disableSaveButtons[idea.idea] = true;
       } catch (e) {
-        console.error('Error occurred during Supabase Service request:', e);
+        if (e === 409) {
+          console.error("Handle duplicate error")
+          this.trackErrors[idea.idea] = "Idea has already been saved.";
+        } else {
+          console.error('Error occurred during Supabase Service request:', e);
+          this.trackErrors[idea.idea] = "There was a problem saving this idea.";
+        }
       }
     } else {
       try {

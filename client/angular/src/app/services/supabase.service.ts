@@ -62,7 +62,10 @@ export class SupabaseService {
           }
         },
         error: (e) => {
-          reject('Failed to save idea: ' + e.message);
+          if (e.status === 409) {
+            reject(e.status)
+          }
+          reject(e.message);
         }
       });
     }); 
