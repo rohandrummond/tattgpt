@@ -15,11 +15,19 @@ export class OpenAiService {
 
   constructor(private http: HttpClient) {}
 
+  toSentenceCase = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.substring(1).toLowerCase();
+  }
+
   generateIdeas = (formData: any): Promise<boolean> => {
     this.ideasSubject.next(null);
     return new Promise((resolve, reject) => {
       this.http.post<Ideas>('https://localhost:7072/generate-ideas', formData).subscribe({
         next: (response) => {
+          response.tattooIdeas.forEach((idea) => {
+            idea.idea = this.toSentenceCase(idea.idea)
+          });
+          console.log(response.tattooIdeas);
           this.ideasSubject.next(response.tattooIdeas);
           resolve(true); 
         },
