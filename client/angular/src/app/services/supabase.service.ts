@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { BehaviorSubject ,Observable } from 'rxjs'
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { createClient, SupabaseClient, Session, AuthChangeEvent } from '@supabase/supabase-js'
+import { createClient, SupabaseClient, Session, AuthChangeEvent, User } from '@supabase/supabase-js'
 import { Idea } from '../interfaces/idea';
 import { AppendedImage } from '../interfaces/appended-image';
 
@@ -50,6 +50,11 @@ export class SupabaseService {
     return this.supabase.auth.signOut();
   };
 
+  getUser = async (): Promise<User | null> => {
+    const { data: { user } } = await this.supabase.auth.getUser();
+    return user; 
+  }
+
   saveIdea = (idea: Idea): Promise<number> => {
     return new Promise((resolve, reject) => {
       this.http.post<number>('https://localhost:7072/save-idea', idea, { observe: 'response' }).subscribe({
@@ -87,5 +92,17 @@ export class SupabaseService {
       })
     })
   }
-  
+
+  fetchIdeas = async (userId: string): Promise<any[] | null> => {    
+    console.log("fetchIdeas is running");
+    try {
+      const { data, error } = await this.supabase.from('ideas').select().eq('user_id', userId);
+      console.log(data);
+      return data;
+    } catch(e) {
+      console.error("Failed to fetch ideas ", e);
+      return null;
+    }
+  }
+
 };

@@ -1,0 +1,12 @@
+<app-loader [isLoading]="isLoading"></app-loader>
+<div class="full-vp flex column ctr">
+    <app-nav></app-nav>
+    <div *ngFor="let idea of ideaData">
+        <p>{{ idea.idea }}</p>
+        <p>{{ idea.description }}</p>
+        <p>{{ idea.color }}</p>
+        <p>{{ idea.placement }}</p>
+        <p>{{ idea.size }}</p>
+        <img [src]="'data:image/png;base64,' + idea.image"/>
+    </div>
+</div>
