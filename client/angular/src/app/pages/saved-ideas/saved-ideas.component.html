@@ -2,11 +2,20 @@
 <div class="full-vp flex column ctr">
     <app-nav></app-nav>
     <div *ngFor="let idea of ideaData">
-        <p>{{ idea.idea }}</p>
-        <p>{{ idea.description }}</p>
-        <p>{{ idea.color }}</p>
-        <p>{{ idea.placement }}</p>
-        <p>{{ idea.size }}</p>
-        <img [src]="'data:image/png;base64,' + idea.image"/>
+        <div [id]="ideaHtmlIds[idea.idea]">
+            <p>{{ idea.idea }}</p>
+            <p>{{ idea.description }}</p>
+            <p>{{ idea.color }}</p>
+            <p>{{ idea.placement }}</p>
+            <p>{{ idea.size }}</p>
+            <ng-container *ngIf="idea.image; else noSavedImage">
+                <img [src]="idea.image"/>
+            </ng-container>
+            <ng-template #noSavedImage>
+                <img src="/assets/images/placeholder.png">
+                <button (click)="generateImage(idea)" class="gen-img-btn">Generate Image</button>
+                <button class="save-img-btn hide">Save Image</button>
+            </ng-template>
+        </div>
     </div>
 </div>

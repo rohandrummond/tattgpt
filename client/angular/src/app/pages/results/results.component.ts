@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { SupabaseService } from '../../services/supabase.service';
-import { Session, User } from '@supabase/supabase-js';
+import { User } from '@supabase/supabase-js';
 import { OpenAiService } from '../../services/openai.service';
 import { AuthRedirectService } from '../../services/authredirect.service';
 import { Idea } from '../../interfaces/idea';
@@ -59,15 +59,15 @@ export class ResultsComponent {
 
   generateImage = async (idea: Idea): Promise<void> => {
     try {
-      const response: boolean = await this.openAiService.generateImage(idea)
-      if (response) {
+      const response: boolean | string = await this.openAiService.generateImage(idea, 'results')
+      if (response === true) {
         this.disableImageButtons[idea.idea] = true;
         if (this.disableSaveButtons[idea.idea] === true) {
           this.disableSaveButtons[idea.idea] = false;
         }
       }
     } catch (e) {
-      console.error('Error occurred during Open AI Service request:', e);
+      console.error(e);
     }
   }
 

@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { createClient, SupabaseClient, Session, AuthChangeEvent, User } from '@supabase/supabase-js'
 import { Idea } from '../interfaces/idea';
 import { AppendedImage } from '../interfaces/appended-image';
+import { Ideas } from '../interfaces/ideas';
 
 @Injectable({ providedIn: 'root' })
 
@@ -93,10 +94,17 @@ export class SupabaseService {
     })
   }
 
-  fetchIdeas = async (userId: string): Promise<any[] | null> => {    
-    console.log("fetchIdeas is running");
+  fetchIdeas = async (userId: string): Promise<Idea[] | null> => {    
+    console.log("Fetch ideas is running")
     try {
       const { data, error } = await this.supabase.from('ideas').select().eq('user_id', userId);
+      if (data) {
+        data.forEach((idea) => {
+          if (idea.image) {
+            idea.image = 'data:image/png;base64,' + idea.image;
+          } 
+        });
+      }
       console.log(data);
       return data;
     } catch(e) {
