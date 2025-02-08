@@ -2,6 +2,7 @@ using System.Buffers;
 using System.Text.Json;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using OpenAI.Chat;
 using OpenAI.Images;
 using Supabase;
@@ -111,6 +112,25 @@ namespace TattGPT
                     Console.WriteLine($"An error occurred: {ex.Message}");
                     return Results.StatusCode(500);
                 }
+            });
+
+            // Delete idea
+            app.MapDelete("/delete-idea", /*async*/ ([FromBody] IdeaData ideaData) => {
+                string jsonString = JsonSerializer.Serialize(ideaData.Id);
+                Console.WriteLine("/delete-idea endpoint is being requested");
+                Console.WriteLine("Data being passed to endpoint:");
+                Console.WriteLine(jsonString);
+                // try
+                // {
+                //     await DeleteIdea(await supabaseClient, ideaId);
+                //     return Results.Ok();
+                // }
+                // catch(Exception ex)
+                // {
+                //     Console.WriteLine($"An error occurred: {ex.Message}");
+                //     return Results.StatusCode(500);
+
+                // }
             });
 
             // Generate Image
@@ -292,6 +312,24 @@ namespace TattGPT
             return insertedModelId;
         }
 
+        // Delete idea in Supabase
+        private static async Task DeleteIdea (Supabase.Client supabaseClient, String ideaId)
+        {
+            if (ideaId.IsNullOrEmpty() && Int32.TryParse(ideaId, out int convertedIdString))
+            {
+                await supabaseClient
+                    .From<SupabaseIdeaModel>()
+                    .Where(x => x.Id == convertedIdString)
+                    .Delete();
+                return;
+            } 
+            else
+            {
+                Console.WriteLine("Unable to convert ID string to int.");
+                return;
+            }
+        }
+
         // Append image to idea in Supabase
         private static async Task<Boolean> AppendImage (Supabase.Client supabaseClient, AppendedImage appendedImage)
         {
@@ -321,6 +359,7 @@ namespace TattGPT
         // Define class for handling idea data
         public class IdeaData
         {
+            public string? Id { get; set; }
             public string? UserId { get; set; }
             public string? Idea { get; set; }
             public string? Description { get; set; }

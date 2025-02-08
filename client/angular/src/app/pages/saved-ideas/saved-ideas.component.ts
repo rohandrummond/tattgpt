@@ -41,7 +41,6 @@ export class SavedIdeasComponent {
           this.ideaHtmlIds[idea.idea] = _.kebabCase(idea.idea);
         })
       }
-      console.log(this.ideaHtmlIds);
       this.isLoading = false;
     }
   }
@@ -52,7 +51,6 @@ export class SavedIdeasComponent {
       const ideaImg: HTMLImageElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} img`);
       const generateImgBtn: HTMLButtonElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} .gen-img-btn`);
       const saveImgBtn: HTMLButtonElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} .save-img-btn`);
-      console.log(ideaImg)
       if (ideaImg && generateImgBtn && saveImgBtn) {
         ideaImg.src = `data:image/png;base64,${base64String}`
         generateImgBtn.classList.add("hide");
@@ -63,6 +61,17 @@ export class SavedIdeasComponent {
       }
     } catch(e) {
       console.error(e);
+    }
+  }
+
+  deleteIdea = async (idea: Idea): Promise<void> => {
+
+    try {
+      if (idea.id) {
+        const result = await this.supabaseService.deleteIdea(idea);
+      }
+    } catch(e) {
+      console.error(e)
     }
   }
   

@@ -95,22 +95,49 @@ export class SupabaseService {
   }
 
   fetchIdeas = async (userId: string): Promise<Idea[] | null> => {    
-    console.log("Fetch ideas is running")
     try {
       const { data, error } = await this.supabase.from('ideas').select().eq('user_id', userId);
       if (data) {
         data.forEach((idea) => {
+          idea.id = idea.id.toString();
           if (idea.image) {
             idea.image = 'data:image/png;base64,' + idea.image;
           } 
         });
       }
-      console.log(data);
       return data;
     } catch(e) {
       console.error("Failed to fetch ideas ", e);
       return null;
     }
+  }
+
+  deleteIdea = (idea: Idea): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+      if (idea.id) {
+        this.http.delete('https://localhost:7072/delete-idea', {
+          observe: 'response',
+          body: JSON.stringify(idea),
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json'
+          })
+        }).subscribe({
+          next: (response) => {
+            if (response.status === 200) {
+              resolve(true); 
+            } else {
+              reject("Failed to append image")
+            }
+          },
+          error: (e) => {
+            reject('Failed to delete idea: ' + e.message);
+          }
+        })
+      }
+      else {
+        reject("No ID found for idea");
+      }
+    })
   }
 
 };
