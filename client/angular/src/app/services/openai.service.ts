@@ -44,7 +44,6 @@ export class OpenAiService {
         next: (response) => {
           base64String = response.replace(/['"]+/g, '');
           if (sourcePage === 'results') {
-            console.log("results page logic is running")
             let updatedIdeas: Idea[] | null;
             if (this.ideasSubject.value) {
               updatedIdeas = this.ideasSubject.value.map((existingIdea) => {
@@ -59,7 +58,6 @@ export class OpenAiService {
             resolve(true);
           } 
           if (sourcePage === 'my-ideas') {
-            console.log("my-ideas page logic is running")
             resolve(base64String);
           }
         },

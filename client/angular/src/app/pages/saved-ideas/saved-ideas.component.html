@@ -14,7 +14,7 @@
             <ng-template #noSavedImage>
                 <img src="/assets/images/placeholder.png">
                 <button (click)="generateImage(idea)" class="gen-img-btn">Generate Image</button>
-                <button class="save-img-btn hide">Save Image</button>
+                <button (click)="appendImage(idea)" class="save-img-btn hide">Save Image</button>
             </ng-template>
             <button (click)="deleteIdea(idea)">Delete Idea</button>
         </div>

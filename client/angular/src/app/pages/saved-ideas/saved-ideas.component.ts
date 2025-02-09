@@ -4,6 +4,7 @@ import { SupabaseService } from '../../services/supabase.service';
 import { OpenAiService } from '../../services/openai.service';
 import { User } from '@supabase/supabase-js';
 import { Idea } from '../../interfaces/idea';
+import { AppendedImage } from '../../interfaces/appended-image';
 import { NavComponent } from '../../components/nav/nav.component';
 import { LoaderComponent } from '../../components/loader/loader.component';
 import * as _ from 'lodash';
@@ -53,14 +54,37 @@ export class SavedIdeasComponent {
       const saveImgBtn: HTMLButtonElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} .save-img-btn`);
       if (ideaImg && generateImgBtn && saveImgBtn) {
         ideaImg.src = `data:image/png;base64,${base64String}`
-        generateImgBtn.classList.add("hide");
-        saveImgBtn.classList.remove("hide");
-        saveImgBtn.classList.add("show");
+        generateImgBtn.classList.add('hide');
+        saveImgBtn.classList.remove('hide');
+        saveImgBtn.classList.add('show');
       } else {
-        console.error("Cannot find img, generate image, or save image button")
+        console.error('Cannot find img, generate image, or save image button')
       }
     } catch(e) {
       console.error(e);
+    }
+  }
+
+  appendImage = async (idea: Idea): Promise<void> => {
+    try {
+      const ideaImg: HTMLImageElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} img`);
+      const saveImgBtn: HTMLButtonElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} .save-img-btn`);
+      if (ideaImg && ideaImg.src && idea.id) {
+        const base64String: string = ideaImg.src.replace('data:image/png;base64,', '')
+        const appendedImage: AppendedImage = {
+          ideaId: parseInt(idea.id),
+          image: base64String
+        }
+        const result: boolean = await this.supabaseService.appendImage(appendedImage);
+        if (result) {
+          console.log("Image has been saved")
+          if (saveImgBtn) {
+            saveImgBtn.disabled = true;
+          }
+        }
+      }
+    } catch (e) {
+      console.error(e)
     }
   }
 
