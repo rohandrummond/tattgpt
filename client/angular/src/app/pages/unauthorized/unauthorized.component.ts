@@ -13,5 +13,5 @@ import { ErrorComponent } from '../../components/error/error.component';
 })
 
 export class UnauthorizedComponent {
-
+  
 }

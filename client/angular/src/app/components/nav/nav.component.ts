@@ -27,8 +27,7 @@ export class NavComponent {
 
   async signOut(): Promise<void> {
     try {
-      const { error } = await this.supabase.signOut();
-      if (error) throw error;
+      await this.supabase.signOut();
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message)

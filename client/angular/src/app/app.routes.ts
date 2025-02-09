@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { AuthGuardService } from './services/auth-guard.service';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
@@ -14,7 +15,11 @@ export const routes: Routes = [
     { path: 'register', component: RegisterComponent},
     { path: 'form', component: IdeaFormComponent},
     { path: 'results', component: ResultsComponent},
-    { path: 'my-ideas', component: SavedIdeasComponent},
+    { 
+        path: 'my-ideas', 
+        component: SavedIdeasComponent, 
+        canActivate: [AuthGuardService]
+      },
     { path: 'unauthorized', component: UnauthorizedComponent},
     { path: '**', component: NotFoundComponent}
 ]; 

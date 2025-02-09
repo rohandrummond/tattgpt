@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core'
 import { BehaviorSubject ,Observable } from 'rxjs'
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { createClient, SupabaseClient, Session, AuthChangeEvent, User } from '@supabase/supabase-js'
 import { Idea } from '../interfaces/idea';
 import { AppendedImage } from '../interfaces/appended-image';
-import { Ideas } from '../interfaces/ideas';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 
@@ -16,7 +16,7 @@ export class SupabaseService {
   private sessionSubject: BehaviorSubject<Session | null> = new BehaviorSubject<Session | null>(null);
   public sessionObservable: Observable<Session | null> = this.sessionSubject.asObservable();
 
-  constructor( private http: HttpClient ) {
+  constructor( private http: HttpClient, private router: Router ) {
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey)
     this.listenToAuthChanges();
   };
@@ -48,7 +48,11 @@ export class SupabaseService {
   };
 
   signOut = () => {
-    return this.supabase.auth.signOut();
+    return this.supabase.auth.signOut().then(() => {
+      this.router.navigate(['/login']);
+    }).catch((e) => {
+      console.error('Sign out failed:', e);
+    });
   };
 
   getUser = async (): Promise<User | null> => {
