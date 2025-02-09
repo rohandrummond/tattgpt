@@ -115,23 +115,27 @@ namespace TattGPT
             });
 
             // Delete idea
-            app.MapDelete("/delete-idea", /*async*/ ([FromBody] IdeaData ideaData) => {
-                string jsonString = JsonSerializer.Serialize(ideaData.Id);
-                Console.WriteLine("/delete-idea endpoint is being requested");
-                Console.WriteLine("Data being passed to endpoint:");
-                Console.WriteLine(jsonString);
-                // try
-                // {
-                //     await DeleteIdea(await supabaseClient, ideaId);
-                //     return Results.Ok();
-                // }
-                // catch(Exception ex)
-                // {
-                //     Console.WriteLine($"An error occurred: {ex.Message}");
-                //     return Results.StatusCode(500);
+            app.MapDelete("/delete-idea", async ([FromBody] IdeaData ideaData) => {
+                if (ideaData.Id != null) {
+                    try
+                    {
+                        await DeleteIdea(await supabaseClient, ideaData.Id);
+                        return Results.Ok();
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        return Results.StatusCode(500);
 
-                // }
-            });
+                    }
+                } 
+                else
+                {
+                    Console.WriteLine("No ID provided ");
+                    return Results.StatusCode(500);
+                }
+            })
+            .WithName("DeleteIdea");
 
             // Generate Image
             app.MapPost("/generate-image", async (IdeaData ideaData) => {
@@ -315,7 +319,7 @@ namespace TattGPT
         // Delete idea in Supabase
         private static async Task DeleteIdea (Supabase.Client supabaseClient, String ideaId)
         {
-            if (ideaId.IsNullOrEmpty() && Int32.TryParse(ideaId, out int convertedIdString))
+            if (!ideaId.IsNullOrEmpty() && Int32.TryParse(ideaId, out int convertedIdString))
             {
                 await supabaseClient
                     .From<SupabaseIdeaModel>()

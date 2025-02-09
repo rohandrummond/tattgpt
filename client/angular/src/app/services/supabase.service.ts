@@ -114,29 +114,24 @@ export class SupabaseService {
 
   deleteIdea = (idea: Idea): Promise<boolean> => {
     return new Promise((resolve, reject) => {
-      if (idea.id) {
-        this.http.delete('https://localhost:7072/delete-idea', {
-          observe: 'response',
-          body: JSON.stringify(idea),
-          headers: new HttpHeaders({
-            'Content-Type': 'application/json'
-          })
-        }).subscribe({
-          next: (response) => {
-            if (response.status === 200) {
-              resolve(true); 
-            } else {
-              reject("Failed to append image")
-            }
-          },
-          error: (e) => {
-            reject('Failed to delete idea: ' + e.message);
-          }
+      this.http.delete('https://localhost:7072/delete-idea', {
+        observe: 'response',
+        body: JSON.stringify(idea),
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json'
         })
-      }
-      else {
-        reject("No ID found for idea");
-      }
+      }).subscribe({
+        next: (response) => {
+          if (response.status === 200) {
+            resolve(true);
+          } else {
+            reject("Failed to append image")
+          }
+        },
+        error: (e) => {
+          reject('Failed to delete idea: ' + e.message);
+        }
+      })
     })
   }
 

@@ -64,15 +64,19 @@ export class SavedIdeasComponent {
     }
   }
 
-  deleteIdea = async (idea: Idea): Promise<void> => {
-
+  deleteIdea = async (deletedIdea: Idea): Promise<void> => {
     try {
-      if (idea.id) {
-        const result = await this.supabaseService.deleteIdea(idea);
+      const result = await this.supabaseService.deleteIdea(deletedIdea);
+      if (result && this.ideaData && this.userData) {
+        delete this.ideaHtmlIds[deletedIdea.idea];
+        const deleteIndex = this.ideaData.findIndex(existingIdea => existingIdea.idea = deletedIdea.idea);
+        if (deleteIndex !== -1) {
+          this.ideaData.splice(deleteIndex, 1);
+        }
       }
     } catch(e) {
       console.error(e)
     }
   }
-  
+ 
 }
