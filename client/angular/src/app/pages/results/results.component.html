@@ -1,18 +1,19 @@
 <div class="full-vp flex column ctr">
     <app-nav></app-nav>
-    <div *ngFor="let concept of ideaData">
-        <p>{{ concept.idea }}</p>
-        <p>{{ concept.description }}</p>
-        <button (click)="generateImage(concept)" [disabled]="disableImageButtons[concept.idea]">Generate Image</button>
-        <img *ngIf="concept.image" [src]="'data:image/png;base64,' + concept.image"/>
-        <ng-container *ngIf="(supabaseService.sessionObservable | async); else loginPrompt">
-            <button (click)="saveConcept(concept)" [disabled]="disableSaveButtons[concept.idea]">Save Idea</button>
-        </ng-container>
-        <ng-template #loginPrompt>
+    @for (item of ideaData; track item.idea) {
+        <p>{{ item.idea }}</p>
+        <p>{{ item.description }}</p>
+        <button (click)="generateImage(item)" [disabled]="disableImageButtons[item.idea]">Generate Image</button>
+        @if ((supabaseService.sessionObservable | async)) {
+            <button (click)="saveIdea(item)" [disabled]="disableSaveButtons[item.idea]">Save Idea</button>
+        } @else {
             <button (click)="acceptResultsAuthPrompt()">Sign in to save</button>
-        </ng-template>
-        <div *ngIf="trackErrors.hasOwnProperty(concept.idea)">
-            <p>{{ trackErrors[concept.idea] }}</p>
-        </div>
-    </div>
+        }
+        @if (item.image) {
+            <img [src]="'data:image/png;base64,' + item.image"/>
+        }
+        @if (trackErrors.hasOwnProperty(item.idea)) {
+            <p>{{ trackErrors[item.idea] }}</p>
+        }
+    }
 </div>

@@ -337,11 +337,13 @@ namespace TattGPT
         // Append image to idea in Supabase
         private static async Task<Boolean> AppendImage (Supabase.Client supabaseClient, AppendedImage appendedImage)
         {
+            #pragma warning disable CS8603
             var response = await supabaseClient
                 .From<SupabaseIdeaModel>()
                 .Where(x => x.Id == appendedImage.IdeaId)
                 .Set(x => x.Image, appendedImage.Image)
                 .Update();
+            #pragma warning restore CS8603
             if (response.ResponseMessage?.IsSuccessStatusCode != true) 
             {
                 Console.WriteLine("Failed to save idea to Supabase");

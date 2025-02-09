@@ -71,7 +71,7 @@ export class ResultsComponent {
     }
   }
 
-  saveConcept = async (idea: Idea): Promise<void> => {
+  saveIdea = async (idea: Idea): Promise<void> => {
     if (this.userData) {
       if (!this.trackSavedIdeas.hasOwnProperty(idea.idea)) {
         try {

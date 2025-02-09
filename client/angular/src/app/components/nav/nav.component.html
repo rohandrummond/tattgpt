@@ -1,7 +1,9 @@
 <nav class="flex row nav-ctr">
-    <a class="body-txt" *ngIf="!(supabase.sessionObservable | async); else logout" (click)="onSignInClick()">Sign in</a>
-    <a routerLink="/form" class="body-txt">Try me</a>
+    <a routerLink="/form" class="body-txt">Generate</a>
+    @if (!(supabase.sessionObservable | async)) {
+        <a class="body-txt" (click)="onSignInClick()">Sign in</a>
+    } @else {
+        <a routerLink="/my-ideas" class="body-txt">My Ideas</a>
+        <a class="body-txt" (click)="signOut()">Sign out</a>
+    }
 </nav>
-<ng-template #logout>
-    <a class="body-txt" (click)="signOut()">Sign out</a>
-</ng-template>

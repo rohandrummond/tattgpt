@@ -1,22 +1,27 @@
 <app-loader [isLoading]="isLoading"></app-loader>
 <div class="full-vp flex column ctr">
     <app-nav></app-nav>
-    <div *ngFor="let idea of ideaData">
-        <div [id]="ideaHtmlIds[idea.idea]">
-            <p>{{ idea.idea }}</p>
-            <p>{{ idea.description }}</p>
-            <p>{{ idea.color }}</p>
-            <p>{{ idea.placement }}</p>
-            <p>{{ idea.size }}</p>
-            <ng-container *ngIf="idea.image; else noSavedImage">
-                <img [src]="idea.image"/>
-            </ng-container>
-            <ng-template #noSavedImage>
-                <img src="/assets/images/placeholder.png">
-                <button (click)="generateImage(idea)" class="gen-img-btn">Generate Image</button>
-                <button (click)="appendImage(idea)" class="save-img-btn hide">Save Image</button>
-            </ng-template>
-            <button (click)="deleteIdea(idea)">Delete Idea</button>
-        </div>
-    </div>
+    @if (ideaData) {
+        @if (ideaData.length > 0) {
+            @for (item of ideaData; track item.id) {
+                <div [id]="ideaHtmlIds[item.idea]">
+                    <p>{{ item.idea }}</p>
+                    <p>{{ item.description }}</p>
+                    <p>{{ item.color }}</p>
+                    <p>{{ item.placement }}</p>
+                    <p>{{ item.size }}</p>
+                    @if (item.image) {
+                        <img [src]="item.image"/>
+                    } @else {
+                        <img src="/assets/images/placeholder.png">
+                        <button (click)="generateImage(item)" class="gen-img-btn">Generate Image</button>
+                        <button (click)="appendImage(item)" class="save-img-btn hide">Save Image</button>
+                    }
+                    <button (click)="deleteIdea(item)">Delete Idea</button>
+                </div>
+            }
+        } @else {
+            <p>You don't have any saved ideas.</p>
+        }
+    } 
 </div>
