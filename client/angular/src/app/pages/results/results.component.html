@@ -4,7 +4,7 @@
         <p>{{ item.idea }}</p>
         <p>{{ item.description }}</p>
         <button (click)="generateImage(item)" [disabled]="disableImageButtons[item.idea]">Generate Image</button>
-        @if ((supabaseService.sessionObservable | async)) {
+        @if ((supabase.sessionObservable | async)) {
             <button (click)="saveIdea(item)" [disabled]="disableSaveButtons[item.idea]">Save Idea</button>
         } @else {
             <button (click)="acceptResultsAuthPrompt()">Sign in to save</button>

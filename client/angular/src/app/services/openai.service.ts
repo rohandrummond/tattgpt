@@ -31,7 +31,7 @@ export class OpenAiService {
           resolve(true); 
         },
         error: (e) => {
-          reject('Failed to generate ideas: ' + e.message);
+          reject('Server failed to generate ideas. ' + e.message);
         }
       });
     });
@@ -62,7 +62,7 @@ export class OpenAiService {
           }
         },
         error: (e) => {
-          reject('Failed to generate image: ' + e.message);
+          reject('Failed to generate image. ' + e.message);
         }
       });
     });

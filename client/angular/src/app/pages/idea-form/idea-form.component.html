@@ -1,7 +1,7 @@
 <app-loader [isLoading]="isLoading"></app-loader>
 <div class="full-vp flex column ctr">
     <app-nav></app-nav>
-    <form [formGroup]="ideaForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="ideaForm" (ngSubmit)="onFormSubmit()">
         <label>Tattoo Style:</label>
         <label for="traditional"><input id="traditional" formControlName="style" type="radio" value="traditional">Traditional (Old School)</label>
         <label for="neo-traditional"><input id="neo-traditional" formControlName="style" type="radio" value="neo-traditional">Neo-traditional</label>

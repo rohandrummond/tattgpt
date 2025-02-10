@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { SupabaseService } from '../../services/supabase.service';
+import { AuthRedirectService } from '../../services/authredirect.service';
 import { User } from '@supabase/supabase-js';
 import { OpenAiService } from '../../services/openai.service';
-import { AuthRedirectService } from '../../services/authredirect.service';
 import { Idea } from '../../interfaces/idea';
 import { AppendedImage } from '../../interfaces/appended-image';
 import { NavComponent } from '../../components/nav/nav.component';
@@ -30,15 +29,14 @@ export class ResultsComponent {
   disableImageButtons: { [name: string]: boolean} = {};
 
   constructor(
-    private http : HttpClient, 
     private router: Router, 
-    private authRedirectService: AuthRedirectService,
-    public readonly supabaseService: SupabaseService, 
-    public openAiService : OpenAiService
+    public readonly supabase: SupabaseService, 
+    public openAi : OpenAiService,
+    private authRedirect: AuthRedirectService
   ) {};
 
   async ngOnInit(): Promise<void> {
-    this.openAiService.ideasObservable.subscribe({
+    this.openAi.ideasObservable.subscribe({
       next: (ideas: Idea[] | null) => {
         if (ideas) {
           this.ideaData = ideas;
@@ -54,20 +52,16 @@ export class ResultsComponent {
         console.error('Error fetching observable:', err);
       }
     });
-    this.userData =  await this.supabaseService.getUser();
+    this.userData = await this.supabase.getUser();
   }
 
   generateImage = async (idea: Idea): Promise<void> => {
-    try {
-      const response: boolean | string = await this.openAiService.generateImage(idea, 'results')
-      if (response === true) {
-        this.disableImageButtons[idea.idea] = true;
-        if (this.disableSaveButtons[idea.idea] === true) {
-          this.disableSaveButtons[idea.idea] = false;
-        }
+    const response: boolean | string = await this.openAi.generateImage(idea, 'results')
+    if (response === true) {
+      this.disableImageButtons[idea.idea] = true;
+      if (this.disableSaveButtons[idea.idea] === true) {
+        this.disableSaveButtons[idea.idea] = false;
       }
-    } catch (e) {
-      console.error(e);
     }
   }
 
@@ -76,40 +70,35 @@ export class ResultsComponent {
       if (!this.trackSavedIdeas.hasOwnProperty(idea.idea)) {
         try {
           idea.userId = this.userData.id as string;
-          const response: number = await this.supabaseService.saveIdea(idea);
+          const response: number = await this.supabase.saveIdea(idea);
           this.trackSavedIdeas[idea.idea] = response;
           this.disableSaveButtons[idea.idea] = true;
-        } catch (e) {
+        } catch(e) {
           if (e === 409) {
-            console.error("Handle duplicate error")
             this.trackErrors[idea.idea] = "Idea has already been saved.";
           } else {
-            console.error('Error occurred during Supabase Service request:', e);
             this.trackErrors[idea.idea] = "There was a problem saving this idea.";
           }
         }
       } else {
-        try {
-          if (!idea.image) {
-            throw 'No base64 string available for image' 
-          }
-          const appendedImage: AppendedImage = {
-            ideaId: this.trackSavedIdeas[idea.idea],
-            image: idea.image 
-          }
-          const response: boolean = await this.supabaseService.appendImage(appendedImage);
-          if (response) {
-            this.disableSaveButtons[idea.idea] = true;
-          }
-        } catch (e) {
-          console.error('Error occurred during Supabase Service request:', e);
+        if (!idea.image) {
+          console.error("Cannot find bas64 string for image");
+          return;
+        }
+        const appendedImage: AppendedImage = {
+          ideaId: this.trackSavedIdeas[idea.idea],
+          image: idea.image 
+        }
+        const response: boolean = await this.supabase.appendImage(appendedImage);
+        if (response) {
+          this.disableSaveButtons[idea.idea] = true;
         }
       }
     }
   }
 
   acceptResultsAuthPrompt = (): void => {
-    this.authRedirectService.setRedirectUrl('/results');
+    this.authRedirect.setRedirectUrl('/results');
     this.router.navigate(['/login'])
   }
 

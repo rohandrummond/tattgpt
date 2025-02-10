@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common'; 
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -21,7 +20,10 @@ import { LoaderComponent } from '../../components/loader/loader.component';
 
 export class IdeaFormComponent {
 
-  constructor(private http : HttpClient, private router : Router, private openAiService : OpenAiService) {};
+  constructor(
+    private router : Router, 
+    private openAi : OpenAiService
+  ) {};
   
   ideaForm = new FormGroup({
     style: new FormControl<String | null>(null, Validators.required),
@@ -33,18 +35,14 @@ export class IdeaFormComponent {
 
   isLoading: boolean = false;
   
-  onSubmit = async () => {
+  onFormSubmit = async () => {
     this.ideaForm.markAllAsTouched();
     this.isLoading = true;
     if (this.ideaForm.valid) {
-      try {
-        const response: boolean = await this.openAiService.generateIdeas(this.ideaForm.value)
-        if (response) {
-          this.isLoading = false;
-          this.router.navigate(['/results']);
-        }
-      } catch (e) {
-        console.error('Error occurred during API request:', e);
+      const result = await this.openAi.generateIdeas(this.ideaForm.value)
+      if (result) {
+        this.isLoading = false;
+        this.router.navigate(['/results']);
       }
     }
   }

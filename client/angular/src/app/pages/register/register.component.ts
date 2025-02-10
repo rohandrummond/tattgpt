@@ -1,10 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { SupabaseService } from '../../services/supabase.service';
-import { AuthRedirectService } from '../../services/authredirect.service';
-import { firstValueFrom } from 'rxjs';
 import { NavComponent } from '../../components/nav/nav.component';
 
 @Component({
@@ -22,8 +19,6 @@ export class RegisterComponent {
 
   constructor(
     private readonly supabase: SupabaseService, 
-    private router : Router,
-    private authRedirectService: AuthRedirectService
   ) {};
 
   registerForm = new FormGroup({
@@ -35,17 +30,14 @@ export class RegisterComponent {
   registerError: string | null = null;
 
   async onSubmit(): Promise<void> {
+    if (this.registerError != null) {
+      this.registerError = null;
+    }
     try {
       const { username, email, password } = this.registerForm.value as { username: string; email: string; password: string };
-      const { error } = await this.supabase.signUp(username, email, password);
-      if (error) throw error;
-      const redirectUrl: string = await firstValueFrom(this.authRedirectService.redirectObservable); 
-      this.router.navigate([redirectUrl]);
-      this.authRedirectService.setRedirectUrl('/');
-    } catch (error) {
-      if (error instanceof Error) {
-        this.registerError = error.message;
-      }
+      await this.supabase.signUp(username, email, password);
+    } catch {
+      this.registerError = 'There was an issue creating your account.';
     }
   }
 }

@@ -16,25 +16,21 @@ import { AuthRedirectService } from '../../services/authredirect.service';
 
 export class NavComponent {
 
-  constructor(private router: Router, public readonly supabase: SupabaseService, private authRedirectService: AuthRedirectService) {}
+  constructor(
+    private router: Router, 
+    public readonly supabase: SupabaseService, 
+    private authRedirect: AuthRedirectService
+  ) {}
 
   onSignInClick(): void {
     if (this.router.url === '/results') {
-      this.authRedirectService.setRedirectUrl('/results');
+      this.authRedirect.setRedirectUrl('/results');
     }
     this.router.navigate(['/login']);
   }
 
   async signOut(): Promise<void> {
-    try {
-      await this.supabase.signOut();
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(error.message)
-      }
-    } finally {
-      console.log("User logged out successfully.")
-    }
+    await this.supabase.signOut();
   }
 
 }

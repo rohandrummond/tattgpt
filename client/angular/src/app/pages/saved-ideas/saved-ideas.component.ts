@@ -23,8 +23,8 @@ import * as _ from 'lodash';
 export class SavedIdeasComponent {
 
   constructor(
-    public readonly supabaseService: SupabaseService,
-    public openAiService: OpenAiService
+    public readonly supabase: SupabaseService,
+    public openAi: OpenAiService
   ) {};
 
   isLoading: boolean = false;
@@ -34,9 +34,9 @@ export class SavedIdeasComponent {
 
   async ngOnInit() {
     this.isLoading = true;
-    this.userData =  await this.supabaseService.getUser();
+    this.userData =  await this.supabase.getUser();
     if (this.userData) {
-      this.ideaData = await this.supabaseService.fetchIdeas(this.userData.id);
+      this.ideaData = await this.supabase.fetchIdeas(this.userData.id);
       if (this.ideaData) {
         this.ideaData.forEach((idea) => {
           this.ideaHtmlIds[idea.idea] = _.kebabCase(idea.idea);
@@ -47,59 +47,42 @@ export class SavedIdeasComponent {
   }
 
   generateImage = async (idea: Idea): Promise<void> => {
-    try {
-      const base64String: boolean | string = await this.openAiService.generateImage(idea, 'my-ideas');
-      const ideaImg: HTMLImageElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} img`);
-      const generateImgBtn: HTMLButtonElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} .gen-img-btn`);
-      const saveImgBtn: HTMLButtonElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} .save-img-btn`);
-      if (ideaImg && generateImgBtn && saveImgBtn) {
-        ideaImg.src = `data:image/png;base64,${base64String}`
-        generateImgBtn.classList.add('hide');
-        saveImgBtn.classList.remove('hide');
-        saveImgBtn.classList.add('show');
-      } else {
-        console.error('Cannot find img, generate image, or save image button')
-      }
-    } catch(e) {
-      console.error(e);
+    const base64String: boolean | string = await this.openAi.generateImage(idea, 'my-ideas');
+    const ideaImg: HTMLImageElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} img`);
+    const generateImgBtn: HTMLButtonElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} .gen-img-btn`);
+    const saveImgBtn: HTMLButtonElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} .save-img-btn`);
+    if (ideaImg && generateImgBtn && saveImgBtn) {
+      ideaImg.src = `data:image/png;base64,${base64String}`
+      generateImgBtn.classList.add('hide');
+      saveImgBtn.classList.remove('hide');
+      saveImgBtn.classList.add('show');
     }
   }
 
   appendImage = async (idea: Idea): Promise<void> => {
-    try {
-      const ideaImg: HTMLImageElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} img`);
-      const saveImgBtn: HTMLButtonElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} .save-img-btn`);
-      if (ideaImg && ideaImg.src && idea.id) {
-        const base64String: string = ideaImg.src.replace('data:image/png;base64,', '')
-        const appendedImage: AppendedImage = {
-          ideaId: parseInt(idea.id),
-          image: base64String
-        }
-        const result: boolean = await this.supabaseService.appendImage(appendedImage);
-        if (result) {
-          console.log("Image has been saved")
-          if (saveImgBtn) {
-            saveImgBtn.disabled = true;
-          }
-        }
+    const ideaImg: HTMLImageElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} img`);
+    const saveImgBtn: HTMLButtonElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} .save-img-btn`);
+    if (idea.id && ideaImg && ideaImg.src && saveImgBtn) {
+      const base64String: string = ideaImg.src.replace('data:image/png;base64,', '')
+      const appendedImage: AppendedImage = {
+        ideaId: parseInt(idea.id),
+        image: base64String
       }
-    } catch (e) {
-      console.error(e)
+      const result: boolean = await this.supabase.appendImage(appendedImage);
+      if (result) {
+        saveImgBtn.disabled = true;
+      }
     }
   }
 
   deleteIdea = async (deletedIdea: Idea): Promise<void> => {
-    try {
-      const result = await this.supabaseService.deleteIdea(deletedIdea);
-      if (result && this.ideaData && this.userData) {
-        delete this.ideaHtmlIds[deletedIdea.idea];
-        const deleteIndex = this.ideaData.findIndex(existingIdea => existingIdea.idea = deletedIdea.idea);
-        if (deleteIndex !== -1) {
-          this.ideaData.splice(deleteIndex, 1);
-        }
+    const result = await this.supabase.deleteIdea(deletedIdea);
+    if (result && this.ideaData && this.userData) {
+      delete this.ideaHtmlIds[deletedIdea.idea];
+      const deleteIndex = this.ideaData.findIndex(existingIdea => existingIdea.idea = deletedIdea.idea);
+      if (deleteIndex !== -1) {
+        this.ideaData.splice(deleteIndex, 1);
       }
-    } catch(e) {
-      console.error(e)
     }
   }
  

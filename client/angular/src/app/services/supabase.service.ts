@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core'
-import { BehaviorSubject ,Observable } from 'rxjs'
+import { BehaviorSubject ,Observable, firstValueFrom } from 'rxjs'
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { AuthRedirectService } from './authredirect.service';
 import { createClient, SupabaseClient, Session, AuthChangeEvent, User } from '@supabase/supabase-js'
 import { Idea } from '../interfaces/idea';
 import { AppendedImage } from '../interfaces/appended-image';
@@ -16,12 +17,12 @@ export class SupabaseService {
   private sessionSubject: BehaviorSubject<Session | null> = new BehaviorSubject<Session | null>(null);
   public sessionObservable: Observable<Session | null> = this.sessionSubject.asObservable();
 
-  constructor( private http: HttpClient, private router: Router ) {
+  constructor( private http: HttpClient, private router: Router, private authRedirectService: AuthRedirectService ) {
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey)
     this.listenToAuthChanges();
   };
 
-  private listenToAuthChanges(): void {
+  private listenToAuthChanges = () => {
     this.supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
         this.sessionSubject.next(session);
@@ -31,28 +32,48 @@ export class SupabaseService {
     });
   };
 
-  signUp = (username: string, email: string, password: string) => {
-    return this.supabase.auth.signUp({
-      email, 
-      password,
-      options: {
-        data: {
-          username
+  signUp = async (username: string, email: string, password: string) => {
+    try {
+      const {error} = await this.supabase.auth.signUp({
+        email, 
+        password,
+        options: {
+          data: {
+            username
+          }
         }
-      }
-    });
+      });
+      if (error) throw error;
+      const redirectUrl: string = await firstValueFrom(this.authRedirectService.redirectObservable); 
+      this.router.navigate([redirectUrl]);
+      this.authRedirectService.setRedirectUrl('/');
+    } catch(e) {
+      console.error('Failed to sign up user. ', e);
+      throw new Error
+    }
+
   };
 
-  signIn = (email: string, password: string) => {
-    return this.supabase.auth.signInWithPassword({ email, password});
+  signIn = async (email: string, password: string) => {
+    try {
+      const { error } = await this.supabase.auth.signInWithPassword({email, password});
+      if (error) throw error;
+      const redirectUrl: string = await firstValueFrom(this.authRedirectService.redirectObservable); 
+      this.router.navigate([redirectUrl]);
+      this.authRedirectService.setRedirectUrl('/');
+    } catch(e) {
+      console.error('Failed to sign in user. ', e);
+      throw new Error
+    }
   };
 
-  signOut = () => {
-    return this.supabase.auth.signOut().then(() => {
+  signOut = async () => {
+    try {
+      await this.supabase.auth.signOut();
       this.router.navigate(['/login']);
-    }).catch((e) => {
-      console.error('Sign out failed:', e);
-    });
+    } catch (e) {
+      console.error('Failed to sign out user. ', e);
+    }
   };
 
   getUser = async (): Promise<User | null> => {
@@ -67,11 +88,10 @@ export class SupabaseService {
           const insertedId: number | null = response.body;
           if (response.status === 200 && insertedId != null ) {
             resolve(insertedId); 
-          } else {
-            reject("Failed to save idea")
           }
         },
         error: (e) => {
+          console.error('Failed to save idea. ', e.message);
           if (e.status === 409) {
             reject(e.status)
           }
@@ -84,16 +104,16 @@ export class SupabaseService {
   appendImage = (appendedImage: AppendedImage): Promise<boolean> => {
     return new Promise((resolve, reject) => {
       this.http.post<any>('https://localhost:7072/append-image', appendedImage, { observe: 'response' }).subscribe({
-          next: (response) => {
-            if (response.status === 200) {
-              resolve(true); 
-            } else {
-              reject("Failed to append image")
-            }
-          },
-          error: (e) => {
-            reject('Failed to append image: ' + e.message);
+        next: (response) => {
+          if (response.status === 200) {
+            resolve(true); 
+          } else {
+            reject("Failed to append image")
           }
+        },
+        error: (e) => {
+          reject('Failed to append image: ' + e.message);
+        }
       })
     })
   }
@@ -101,6 +121,7 @@ export class SupabaseService {
   fetchIdeas = async (userId: string): Promise<Idea[] | null> => {    
     try {
       const { data, error } = await this.supabase.from('ideas').select().eq('user_id', userId);
+      if (error) throw error;
       if (data) {
         data.forEach((idea) => {
           idea.id = idea.id.toString();
@@ -111,7 +132,7 @@ export class SupabaseService {
       }
       return data;
     } catch(e) {
-      console.error("Failed to fetch ideas ", e);
+      console.error("Failed to fetch ideas. ", e);
       return null;
     }
   }
