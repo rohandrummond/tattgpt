@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavComponent } from '../../components/nav/nav.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   imports: [
     CommonModule,
-    NavComponent
+    NavComponent,
+    RouterLink
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'

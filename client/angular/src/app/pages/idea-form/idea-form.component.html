@@ -1,51 +1,70 @@
 <app-loader [isLoading]="isLoading"></app-loader>
 <div class="full-vp flex column ctr">
     <app-nav></app-nav>
-    <form [formGroup]="ideaForm" (ngSubmit)="onFormSubmit()">
-        <label>Tattoo Style:</label>
-        <label for="traditional"><input id="traditional" formControlName="style" type="radio" value="traditional">Traditional (Old School)</label>
-        <label for="neo-traditional"><input id="neo-traditional" formControlName="style" type="radio" value="neo-traditional">Neo-traditional</label>
-        <label for="japanese"><input id="japanese" formControlName="style" type="radio" value="Japanese">Japanese (Irezumi)</label>
-        <label for="realism"><input id="realism" formControlName="style" type="radio" value="realism">Realism</label>
-        <label for="blackwork"><input id="blackwork" formControlName="style" type="radio" value="blackwork">Blackwork</label>
-        <label for="geometric"><input id="geometric" formControlName="style" type="radio" value="geometric">Geometric</label>
-        <label for="minimalist"><input id="minimalist" formControlName="style" type="radio" value="minimalist">Minimalist</label>
-        <div *ngIf="ideaForm.get('style')?.hasError('required') && ideaForm.get('style')?.touched">
-            <span style="color:red">Please select your tattoo style.</span>
-        </div> 
-        <br>
-        <label>Color:</label>
-        <label for="color"><input id="color" formControlName="color" value="color" type="radio">Yes</label>
-        <label for="no-color"><input id="no-color" formControlName="color" value="black and grey" type="radio">No</label>
-        <div *ngIf="ideaForm.get('color')?.hasError('required') && ideaForm.get('color')?.touched">
-            <span style="color:red">Please select your colour preference.</span>
-        </div> 
-        <br>
-        <label>Size:</label>
-        <label for="small"><input id="small" formControlName="size" type="radio" value="small">Small (less than 3 inches)</label>
-        <label for="medium"><input id="medium" formControlName="size" type="radio" value="medium">Medium (3 - 6 inches)</label>
-        <label for="large"><input id="large" formControlName="size" type="radio" value="large">Large (6 - 12 inches)</label>
-        <label for="x-large"><input id="x-large" formControlName="size" type="radio" value="x-large">Extra large (12+ inches)</label>
-        <label for="sleeve"><input id="sleeve" formControlName="size" type="radio" value="sleeve">Sleeve</label>
-        <div *ngIf="ideaForm.get('size')?.hasError('required') && ideaForm.get('size')?.touched">
-            <span style="color:red">Please select a size.</span>
-        </div> 
-        <br>
-        <label>Area:</label>
-        <label for="upper-arm"><input id="upper-arm" formControlName="area" type="radio" value="upper-arm">Upper arm</label>
-        <label for="forearm"><input id="forearm" formControlName="area" type="radio" value="forearm">Forearm</label>
-        <label for="lower-leg"><input id="lower-leg" formControlName="area" type="radio" value="lower-leg">Lower leg</label>
-        <label for="upper-leg"><input id="upper-leg" formControlName="area" type="radio" value="upper-leg">Upper leg</label>
-        <label for="chest"><input id="chest" formControlName="area" type="radio" value="chest">Chest</label>
-        <label for="stomach"><input id="stomach" formControlName="area" type="radio" value="stomach">Stomach</label>
-        <label for="back"><input id="back" formControlName="area" type="radio" value="back">Back</label>
-        <div *ngIf="ideaForm.get('area')?.hasError('required') && ideaForm.get('area')?.touched">
-            <span style="color:red">Please select an area.</span>
-        </div> 
-        <br>
-        <label for="themes">Ideas:</label>
-        <input id="themes" formControlName="themes" type="text" placeholder="Family heritage, cultural signficance, special memory etc">
-        <br>
-        <button type="submit" [disabled]="isLoading">Submit</button>
-    </form>
+    <div class="idea-form-ctr">
+        <h1 class="heading-md">Generate an idea</h1>
+        <form [formGroup]="ideaForm" class="idea-form" (ngSubmit)="onFormSubmit()">
+            <div class="idea-form-inpt-grp">
+                <label class="idea-form-lbl">Tattoo Style:</label>
+                <select id="style" formControlName="style" class="body-txt">
+                    <option value="" disabled selected>Please choose...</option>
+                    <option value="traditional">Traditional (Old School)</option>
+                    <option value="neo-traditional">Neo-traditional</option>
+                    <option value="japanese">Japanese (Irezumi)</option>
+                    <option value="realism">Realism</option>
+                    <option value="blackwork">Blackwork</option>
+                    <option value="geometric">Geometric</option>
+                    <option value="minimalist">Minimalist</option>
+                </select>
+                <div *ngIf="ideaForm.get('style')?.hasError('required') && ideaForm.get('style')?.touched">
+                    <span class="sub-txt" style="color:red">Please select your tattoo style.</span>
+                </div> 
+            </div>
+            <div class="idea-form-inpt-grp">
+                <label class="idea-form-lbl">Size:</label>
+                <select id="size" formControlName="size" class="body-txt">
+                    <option value="" disabled>Please choose...</option>
+                    <option value="small">Small (less than 3 inches)</option>
+                    <option value="medium">Medium (3 - 6 inches)</option>
+                    <option value="large">Large (6 - 12 inches)</option>
+                    <option value="x-large">Extra Large (12+ inches)</option>
+                    <option value="sleeve">Sleeve</option>
+                </select>
+                <div *ngIf="ideaForm.get('size')?.hasError('required') && ideaForm.get('size')?.touched">
+                    <span class="sub-txt" style="color:red">Please select a size.</span>
+                </div>
+            </div>
+            <div class="idea-form-inpt-grp">
+                <label class="idea-form-lbl">Area:</label>
+                <select id="area" formControlName="area" class="body-txt">
+                    <option value="" disabled>Please choose...</option>
+                    <option value="upper-arm">Upper arm</option>
+                    <option value="forearm">Forearm</option>
+                    <option value="lower-leg">Lower leg</option>
+                    <option value="upper-leg">Upper leg</option>
+                    <option value="chest">Chest</option>
+                    <option value="stomach">Stomach</option>
+                    <option value="back">Back</option>
+                </select>
+                <div *ngIf="ideaForm.get('area')?.hasError('required') && ideaForm.get('area')?.touched">
+                    <span class="sub-txt" style="color:red">Please select an area.</span>
+                </div> 
+            </div>
+            <div class="idea-form-inpt-grp">
+                <label class="idea-form-lbl">Color:</label>
+                <div class="idea-form-radio-ctr">
+                    <label for="color"><input id="color" formControlName="color" value="color" type="radio">Yes</label>
+                    <label for="no-color"><input id="no-color" formControlName="color" value="black and grey" type="radio">No</label>
+                </div>
+                <div *ngIf="ideaForm.get('color')?.hasError('required') && ideaForm.get('color')?.touched">
+                    <span class="sub-txt" style="color:red">Please select your colour preference.</span>
+                </div> 
+            </div>
+            <div class="idea-form-inpt-grp">
+                <label for="themes" class="idea-form-lbl">Ideas:</label>
+                <input class="body-txt" id="themes" formControlName="themes" type="text" placeholder="Placeholder...">
+            </div>
+            <button class="btn idea-form-btn" type="submit" [disabled]="isLoading">Submit</button>
+        </form>
+    </div>
 </div>

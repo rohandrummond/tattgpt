@@ -26,10 +26,10 @@ export class IdeaFormComponent {
   ) {};
   
   ideaForm = new FormGroup({
-    style: new FormControl<String | null>(null, Validators.required),
+    style: new FormControl<String | null>("", Validators.required),
+    size: new FormControl<String | null>("", Validators.required),
+    area: new FormControl<String | null>("", Validators.required),
     color: new FormControl<String | null>(null, Validators.required),
-    area: new FormControl<String | null>(null, Validators.required),
-    size: new FormControl<String | null>(null, Validators.required),
     themes: new FormControl<String | null>(null)
   });
 
