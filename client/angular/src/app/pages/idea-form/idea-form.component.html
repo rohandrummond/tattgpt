@@ -53,8 +53,8 @@
             <div class="idea-form-inpt-grp">
                 <label class="idea-form-lbl">Color:</label>
                 <div class="idea-form-radio-ctr">
-                    <label for="color"><input id="color" formControlName="color" value="color" type="radio">Yes</label>
-                    <label for="no-color"><input id="no-color" formControlName="color" value="black and grey" type="radio">No</label>
+                    <label for="color" class="body-txt"><input id="color" formControlName="color" value="color" type="radio" >Yes</label>
+                    <label for="no-color" class="body-txt"><input id="no-color" formControlName="color" value="black and grey" type="radio" >No</label>
                 </div>
                 <div *ngIf="ideaForm.get('color')?.hasError('required') && ideaForm.get('color')?.touched">
                     <span class="sub-txt" style="color:red">Please select your colour preference.</span>

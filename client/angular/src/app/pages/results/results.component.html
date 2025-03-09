@@ -1,19 +1,26 @@
 <div class="full-vp flex column ctr">
     <app-nav></app-nav>
-    @for (item of ideaData; track item.idea) {
-        <p>{{ item.idea }}</p>
-        <p>{{ item.description }}</p>
-        <button (click)="generateImage(item)" [disabled]="disableImageButtons[item.idea]">Generate Image</button>
-        @if ((supabase.sessionObservable | async)) {
-            <button (click)="saveIdea(item)" [disabled]="disableSaveButtons[item.idea]">Save Idea</button>
-        } @else {
-            <button (click)="acceptResultsAuthPrompt()">Sign in to save</button>
+    <div class="card-ctr">
+        @for (item of ideaData; track item.idea) {
+            <div class="card">
+                <p class="heading-sm">{{ item.idea }}</p>
+                <p class="body-txt">{{ item.description }}</p>
+                <div class="card-btn-ctr">
+                    <button (click)="generateImage(item)" [disabled]="disableImageButtons[item.idea]" class="btn-outline card-btn">Generate Image</button>
+                    @if ((supabase.sessionObservable | async)) {
+                        <button (click)="saveIdea(item)" [disabled]="disableSaveButtons[item.idea]" class="btn card-btn">Save Idea</button>
+                    } @else {
+                        <button (click)="acceptResultsAuthPrompt()" class="btn card-btn">Sign in to save</button>
+                    }
+                </div>
+                @if (item.image) {
+                    <img [src]="'data:image/png;base64,' + item.image"/>
+                }
+                @if (trackErrors.hasOwnProperty(item.idea)) {
+                    <p>{{ trackErrors[item.idea] }}</p>
+                }
+            </div>
         }
-        @if (item.image) {
-            <img [src]="'data:image/png;base64,' + item.image"/>
-        }
-        @if (trackErrors.hasOwnProperty(item.idea)) {
-            <p>{{ trackErrors[item.idea] }}</p>
-        }
-    }
+    </div>
+
 </div>
