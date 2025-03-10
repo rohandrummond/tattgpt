@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { SupabaseService } from '../../services/supabase.service';
 import { NavComponent } from '../../components/nav/nav.component';
+import { AuthformComponent } from '../../components/authform/authform.component';
 
 @Component({
   selector: 'app-login-form',
@@ -11,7 +11,7 @@ import { NavComponent } from '../../components/nav/nav.component';
     ReactiveFormsModule,
     CommonModule,
     NavComponent,
-    RouterLink
+    AuthformComponent
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'

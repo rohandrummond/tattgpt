@@ -69,7 +69,7 @@ img {
 .heading-lg {
     font-size: 100px;
     font-weight: 600;
-    letter-spacing: -6px;
+    letter-spacing: -5px;
     margin: 0;
     padding: 0;
 }
@@ -95,16 +95,12 @@ img {
     font-size: 16px;
     font-weight: 400;
     letter-spacing: 0;
-    margin: 0;
-    padding: 0;
 }
 
 .sub-txt {
     font-size: 12px;
     font-weight: 400;
     letter-spacing: 0;
-    margin: 0;
-    padding: 0;
 }
 
 .full-vp {
@@ -141,6 +137,10 @@ img {
 
 .show {
     display: unset;
+}
+
+.link {
+    text-decoration: underline;
 }
 
 /* Nav */
@@ -182,7 +182,68 @@ img {
     align-self: center;
 }
 
-/* Idea Form */
+/* Forms */
+
+select,
+input {
+    font-family: 'Geist', sans-serif;
+    background-color: #ffffff;
+    border: 1px solid #9AA6B2;
+    border-radius: 6px;
+}
+
+select {
+    padding: 8px 4px;
+}
+
+input[type="text"] {
+    padding: 8px;
+}
+
+input[type=radio] {
+    margin: 3px 3px 0 0;
+}
+
+.form-inpt-grp {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-lbl {
+    font-weight: 600;
+}
+
+.form-btn {
+    margin: 15px 0;
+    align-self: flex-start;
+}
+
+/* Form - Auth */
+
+.auth-ctr-otr {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-ctr-inr {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-hd {
+    margin-bottom: 30px;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Form - Idea Generator*/
 
 .idea-form-ctr {
     align-self: center;
@@ -202,44 +263,9 @@ img {
     gap: 20px;
 }
 
-.idea-form-inpt-grp {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.idea-form-lbl {
-    font-weight: 600;
-}
-
-.idea-form select,
-.idea-form input {
-    background-color: #ffffff;
-    padding: 8px 4px;
-    border: 1px solid #9AA6B2;
-    border-radius: 6px;
-}
-
-.idea-form select {
-    padding: 8px 4px;
-}
-
-.idea-form input {
-    padding: 8px;
-}
-
 .idea-form-radio-ctr {
     display: flex;
     gap: 8px;
-}
-
-.idea-form input[type=radio] {
-    margin: 3px 3px 0 0;
-}
-
-.idea-form-btn {
-    margin-top: 15px;
-    align-self: flex-start;
 }
 
 /* Cards */
@@ -294,85 +320,3 @@ img {
 
 @keyframes l7 {to{transform: rotate(.5turn)}}
 
-/* Fonts */
-
-@font-face {
-    font-family: 'Geist';
-    src: url('/assets/fonts/Geist-Black.woff2') format('woff2'),
-            url('/assets/fonts/Geist-Black.ttf') format('truetype'),
-            url('/assets/fonts/Geist-Black.otf') format('opentype');
-    font-weight: 900;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Geist';
-    src: url('/assets/fonts/Geist-ExtraBold.woff2') format('woff2'),
-         url('/assets/fonts/Geist-ExtraBold.ttf') format('truetype'),
-         url('/assets/fonts/Geist-ExtraBold.otf') format('opentype');
-    font-weight: 800;
-    font-style: normal;
-}
-  
-@font-face {
-    font-family: 'Geist';
-    src: url('/assets/fonts/Geist-Bold.woff2') format('woff2'),
-         url('/assets/fonts/Geist-Bold.ttf') format('truetype'),
-         url('/assets/fonts/Geist-Bold.otf') format('opentype');
-    font-weight: 700;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Geist';
-    src: url('/assets/fonts/Geist-SemiBold.woff2') format('woff2'),
-         url('/assets/fonts/Geist-SemiBold.ttf') format('truetype'),
-         url('/assets/fonts/Geist-SemiBold.otf') format('opentype');
-    font-weight: 600;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Geist';
-    src: url('/assets/fonts/Geist-Medium.woff2') format('woff2'),
-         url('/assets/fonts/Geist-Medium.ttf') format('truetype'),
-         url('/assets/fonts/Geist-Medium.otf') format('opentype');
-    font-weight: 500;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Geist';
-    src: url('/assets/fonts/Geist-Regular.woff2') format('woff2'),
-         url('/assets/fonts/Geist-Regular.ttf') format('truetype'),
-         url('/assets/fonts/Geist-Regular.otf') format('opentype');
-    font-weight: 400; 
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Geist';
-    src: url('/assets/fonts/Geist-Light.woff2') format('woff2'),
-         url('/assets/fonts/Geist-Light.ttf') format('truetype'),
-         url('/assets/fonts/Geist-Light.otf') format('opentype');
-    font-weight: 300;
-    font-style: normal;
-}
-  
-@font-face {
-    font-family: 'Geist';
-    src: url('/assets/fonts/Geist-ExtraLight.woff2') format('woff2'),
-         url('/assets/fonts/Geist-ExtraLight.ttf') format('truetype'),
-         url('/assets/fonts/Geist-ExtraLight.otf') format('opentype');
-    font-weight: 200;
-    font-style: normal;
-}
-  
-@font-face {
-    font-family: 'Geist';
-    src: url('/assets/fonts/Geist-Thin.woff2') format('woff2'),
-         url('/assets/fonts/Geist-Thin.ttf') format('truetype'),
-         url('/assets/fonts/Geist-Thin.otf') format('opentype');
-    font-weight: 100; 
-    font-style: normal;
-}

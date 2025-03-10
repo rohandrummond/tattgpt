@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SupabaseService } from '../../services/supabase.service';
 import { NavComponent } from '../../components/nav/nav.component';
+import { AuthformComponent } from '../../components/authform/authform.component';
 
 @Component({
   selector: 'app-register-form',
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    NavComponent
+    NavComponent,
+    AuthformComponent
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
@@ -40,4 +42,5 @@ export class RegisterComponent {
       this.registerError = 'There was an issue creating your account.';
     }
   }
+  
 }

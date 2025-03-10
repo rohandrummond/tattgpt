@@ -2,10 +2,10 @@
 <div class="full-vp flex column ctr">
     <app-nav></app-nav>
     <div class="idea-form-ctr">
-        <h1 class="heading-md">Generate an idea</h1>
+        <h1 class="heading-md">Generate a tattoo idea</h1>
         <form [formGroup]="ideaForm" class="idea-form" (ngSubmit)="onFormSubmit()">
-            <div class="idea-form-inpt-grp">
-                <label class="idea-form-lbl">Tattoo Style:</label>
+            <div class="form-inpt-grp">
+                <label class="form-lbl">Tattoo Style:</label>
                 <select id="style" formControlName="style" class="body-txt">
                     <option value="" disabled selected>Please choose...</option>
                     <option value="traditional">Traditional (Old School)</option>
@@ -20,8 +20,8 @@
                     <span class="sub-txt" style="color:red">Please select your tattoo style.</span>
                 </div> 
             </div>
-            <div class="idea-form-inpt-grp">
-                <label class="idea-form-lbl">Size:</label>
+            <div class="form-inpt-grp">
+                <label class="form-lbl">Size:</label>
                 <select id="size" formControlName="size" class="body-txt">
                     <option value="" disabled>Please choose...</option>
                     <option value="small">Small (less than 3 inches)</option>
@@ -34,8 +34,8 @@
                     <span class="sub-txt" style="color:red">Please select a size.</span>
                 </div>
             </div>
-            <div class="idea-form-inpt-grp">
-                <label class="idea-form-lbl">Area:</label>
+            <div class="form-inpt-grp">
+                <label class="form-lbl">Area:</label>
                 <select id="area" formControlName="area" class="body-txt">
                     <option value="" disabled>Please choose...</option>
                     <option value="upper-arm">Upper arm</option>
@@ -50,8 +50,8 @@
                     <span class="sub-txt" style="color:red">Please select an area.</span>
                 </div> 
             </div>
-            <div class="idea-form-inpt-grp">
-                <label class="idea-form-lbl">Color:</label>
+            <div class="form-inpt-grp">
+                <label class="form-lbl">Color:</label>
                 <div class="idea-form-radio-ctr">
                     <label for="color" class="body-txt"><input id="color" formControlName="color" value="color" type="radio" >Yes</label>
                     <label for="no-color" class="body-txt"><input id="no-color" formControlName="color" value="black and grey" type="radio" >No</label>
@@ -60,11 +60,11 @@
                     <span class="sub-txt" style="color:red">Please select your colour preference.</span>
                 </div> 
             </div>
-            <div class="idea-form-inpt-grp">
-                <label for="themes" class="idea-form-lbl">Ideas:</label>
+            <div class="form-inpt-grp">
+                <label for="themes" class="form-lbl">Ideas:</label>
                 <input class="body-txt" id="themes" formControlName="themes" type="text" placeholder="Placeholder...">
             </div>
-            <button class="btn idea-form-btn" type="submit" [disabled]="isLoading">Submit</button>
+            <button class="btn form-btn" type="submit" [disabled]="isLoading">Submit</button>
         </form>
     </div>
 </div>

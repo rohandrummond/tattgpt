@@ -1,14 +1,4 @@
 <div class="full-vp flex column ctr">
     <app-nav></app-nav>
-    <div>This is the register form.</div>
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-        <label for="username">Username</label>
-        <input id="username" formControlName="username" type="text">
-        <label for="email">Email</label>
-        <input id="email" formControlName="email" type="text">
-        <label for="password">Password</label>
-        <input id="password" formControlName="password" type="text">
-        <button type="submit">Submit</button>
-        <p *ngIf="registerError">{{ registerError }}</p>
-    </form>
+    <app-authform [formType]="'register'" [formHeading]="'Create your account'" class="auth-ctr-otr"></app-authform>
 </div>
