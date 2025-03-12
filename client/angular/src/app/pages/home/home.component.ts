@@ -25,15 +25,14 @@ export class HomeComponent {
   
     const typingSpeed = 250; 
     const deletingSpeed = 150; 
-    const delayBetweenWords = 1000; 
-    const delayBeforeSecondWord = 1000; 
+    const delay = 500; 
     
     const typeWord = (element: HTMLHeadingElement, content: string, index: number, callback?: () => void) => {
       if (index < content.length) {
         element.textContent = content.substring(0, index + 1);
         setTimeout(() => typeWord(element, content, index + 1, callback), typingSpeed);
       } else if (callback) {
-        setTimeout(callback, delayBetweenWords);
+        setTimeout(callback, delay);
       }
     };
 
@@ -55,8 +54,13 @@ export class HomeComponent {
             firstHeading.style.display = "none";
             setTimeout(() => {
               secondHeading.style.display = "flex"; 
-              typeWord(secondHeading, secondHeadingContent, 0);
-            }, delayBeforeSecondWord);
+              typeWord(secondHeading, secondHeadingContent, 0, () => { 
+                const hiddenElements: NodeListOf<HTMLElement> = document.querySelectorAll(".hide");
+                hiddenElements.forEach(element => {
+                  element.style.opacity = "1";
+                })
+              });
+            }, delay);
           });
         });
       }
