@@ -204,6 +204,10 @@ input[type=radio] {
     margin: 3px 3px 0 0;
 }
 
+.form-hd {
+    margin-bottom: 30px;
+}
+
 .form-inpt-grp {
     display: flex;
     flex-direction: column;
@@ -219,6 +223,10 @@ input[type=radio] {
     align-self: flex-start;
 }
 
+.form-err {
+    color: red;
+}
+
 /* Form - Auth */
 
 .auth-ctr-otr {
@@ -231,10 +239,6 @@ input[type=radio] {
 .auth-ctr-inr {
     display: flex;
     flex-direction: column;
-}
-
-.auth-hd {
-    margin-bottom: 30px;
 }
 
 .auth-form {
@@ -252,8 +256,7 @@ input[type=radio] {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    gap: 30px
+    align-items: start;
 }
 
 .idea-form {

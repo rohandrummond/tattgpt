@@ -1,32 +1,31 @@
 <div class="auth-ctr-inr">
-    <h1 class="heading-md auth-hd">{{ formHeading() }}</h1>
+    <h1 class="heading-md form-hd">{{ formHeading() }}</h1>
     <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="auth-form">
         @if (formType() == 'register') {
             <div class="form-inpt-grp">
                 <label for="username" class="form-lbl">Username</label>
-                <input id="username" class="body-txt" formControlName="username" type="text" placeholder="Sam Altman">
+                <input id="username" class="body-txt" formControlName="username" type="text" placeholder="Sam Altman" required>
             </div>
         }
         <div class="form-inpt-grp">
             <label for="email" class="form-lbl">Email</label>
-            <input id="email" class="body-txt" formControlName="email" type="text" placeholder="samaltman@gmail.com">
+            <input id="email" class="body-txt" formControlName="email" type="text" placeholder="samaltman@gmail.com" required>
         </div>
         <div class="form-inpt-grp">
             <label for="password" class="form-lbl">Password</label>
-            <input id="password" class="body-txt" formControlName="password" type="text" placeholder="deepseekftw">
+            <input id="password" class="body-txt" formControlName="password" type="text" placeholder="deepseekftw" required>
         </div>
         <button class="btn form-btn" type="submit">Submit</button>
-        @if (authError) {
-            <p >{{ authError }}</p>
-        }
+
     </form>
-
-        <p>
-            @if (formType() == 'register') {
-                Already have an account? Sign in <a class="link" routerLink="/login">here</a>
-            } @else {
-                Don't have an account? Create one <a class="link" routerLink="/register">here</a>
-            }
-
-        </p>
+    @if (authError) {
+        <p class="sub-txt form-err">{{ authError }}</p>
+    }
+    <p class="body-txt">
+        @if (formType() == 'register') {
+            Already have an account? Sign in <a class="link" routerLink="/login">here</a>
+        } @else {
+            Don't have an account? Create one <a class="link" routerLink="/register">here</a>
+        }
+    </p>
 </div>

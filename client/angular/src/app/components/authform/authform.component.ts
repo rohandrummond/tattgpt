@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { SupabaseService } from '../../services/supabase.service';
 import { RouterLink } from '@angular/router';
 
@@ -22,9 +22,9 @@ export class AuthformComponent {
   formHeading = input.required<string>();
 
   authForm = new FormGroup({
-    username: new FormControl<String | null>(null, Validators.required),
-    email: new FormControl<String | null>(null, Validators.required),
-    password: new FormControl<String | null>(null, Validators.required),
+    username: new FormControl<String | null>(null),
+    email: new FormControl<String | null>(null),
+    password: new FormControl<String | null>(null),
   });
 
   authError: string | null = null;
@@ -35,18 +35,26 @@ export class AuthformComponent {
     }
     if (this.formType() == 'register') {
       const { username, email, password } = this.authForm.value as { username: string; email: string; password: string };
-      try {
-        await this.supabase.signUp(username, email, password);
-      } catch {
-        this.authError = 'There was an issue creating your account.';
+      if (username && email && password) {
+        try {
+          await this.supabase.signUp(username, email, password);
+        } catch {
+          this.authError = 'There was an issue creating your account.';
+        }
+      } else {
+        this.authError = 'Please ensure you include a username, email and password.';
       }
     } else {
       const { email, password } = this.authForm.value as { email: string; password: string };
-      try {
-        await this.supabase.signIn(email, password);
-      } catch {
-        this.authError = 'There was an issue logging you in.';
-      } 
+      if (email && password) {
+        try {
+          await this.supabase.signIn(email, password);
+        } catch {
+          this.authError = 'There was an issue logging you in.';
+        } 
+      } else {
+        this.authError = 'Please ensure you include an email and password.';
+      }
     }
   }
 
