@@ -67,7 +67,7 @@ img {
 .heading-lg {
     font-size: 100px;
     font-weight: 600;
-    letter-spacing: -6.25px;
+    letter-spacing: -6px;
     margin: 0;
     padding: 0;
 }
@@ -225,6 +225,10 @@ input[type=radio] {
 
 .form-err {
     color: red;
+}
+
+.form-empty {
+    color: #767676;
 }
 
 /* Form - Auth */

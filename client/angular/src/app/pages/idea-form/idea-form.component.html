@@ -6,7 +6,7 @@
         <form [formGroup]="ideaForm" class="idea-form" (ngSubmit)="onFormSubmit()">
             <div class="form-inpt-grp">
                 <label class="form-lbl">Tattoo Style*</label>
-                <select id="style" formControlName="style" class="body-txt">
+                <select id="style" formControlName="style" class="body-txt" [class]="{'form-empty': !ideaForm.get('style')?.value}">
                     <option value="" disabled selected>Please choose...</option>
                     <option value="traditional">Traditional (Old School)</option>
                     <option value="neo-traditional">Neo-traditional</option>
@@ -16,13 +16,10 @@
                     <option value="geometric">Geometric</option>
                     <option value="minimalist">Minimalist</option>
                 </select>
-                <div *ngIf="ideaForm.get('style')?.hasError('required') && ideaForm.get('style')?.touched">
-                    <span class="sub-txt" style="color:red">Please select your tattoo style.</span>
-                </div> 
             </div>
             <div class="form-inpt-grp">
                 <label class="form-lbl">Size*</label>
-                <select id="size" formControlName="size" class="body-txt">
+                <select id="size" formControlName="size" class="body-txt" [class]="{'form-empty': !ideaForm.get('size')?.value}"> 
                     <option value="" disabled>Please choose...</option>
                     <option value="small">Small (less than 3 inches)</option>
                     <option value="medium">Medium (3 - 6 inches)</option>
@@ -30,13 +27,10 @@
                     <option value="x-large">Extra Large (12+ inches)</option>
                     <option value="sleeve">Sleeve</option>
                 </select>
-                <div *ngIf="ideaForm.get('size')?.hasError('required') && ideaForm.get('size')?.touched">
-                    <span class="sub-txt" style="color:red">Please select a size.</span>
-                </div>
             </div>
             <div class="form-inpt-grp">
                 <label class="form-lbl">Area*</label>
-                <select id="area" formControlName="area" class="body-txt">
+                <select id="area" formControlName="area" class="body-txt" [class]="{'form-empty': !ideaForm.get('area')?.value}">
                     <option value="" disabled>Please choose...</option>
                     <option value="upper-arm">Upper arm</option>
                     <option value="forearm">Forearm</option>
@@ -46,9 +40,6 @@
                     <option value="stomach">Stomach</option>
                     <option value="back">Back</option>
                 </select>
-                <div *ngIf="ideaForm.get('area')?.hasError('required') && ideaForm.get('area')?.touched">
-                    <span class="sub-txt" style="color:red">Please select an area.</span>
-                </div> 
             </div>
             <div class="form-inpt-grp">
                 <label class="form-lbl">Color*</label>
@@ -56,9 +47,6 @@
                     <label for="color" class="body-txt"><input id="color" formControlName="color" value="color" type="radio" >Yes</label>
                     <label for="no-color" class="body-txt"><input id="no-color" formControlName="color" value="black and grey" type="radio" >No</label>
                 </div>
-                <div *ngIf="ideaForm.get('color')?.hasError('required') && ideaForm.get('color')?.touched">
-                    <span class="sub-txt" style="color:red">Please select your colour preference.</span>
-                </div> 
             </div>
             <div class="form-inpt-grp">
                 <label for="themes" class="form-lbl">Additional info</label>

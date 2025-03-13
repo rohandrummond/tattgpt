@@ -1,11 +1,8 @@
-using System.Buffers;
 using System.Text.Json;
-using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using OpenAI.Chat;
 using OpenAI.Images;
-using Supabase;
 using Supabase.Postgrest;
 using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
