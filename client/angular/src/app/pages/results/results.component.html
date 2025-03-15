@@ -21,9 +21,8 @@
                         <button (click)="acceptResultsAuthPrompt()" class="btn card-btn">Sign in to save</button>
                     }
                 </div>
-
                 @if (trackErrors.hasOwnProperty(item.idea)) {
-                    <p>{{ trackErrors[item.idea] }}</p>
+                    <p class="sub-txt form-err no-mp">{{ trackErrors[item.idea] }}</p>
                 }
             </div>
         }

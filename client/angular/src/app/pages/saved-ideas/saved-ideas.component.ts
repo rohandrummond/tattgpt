@@ -31,6 +31,7 @@ export class SavedIdeasComponent {
   userData: User | null = null;
   ideaData: Idea[] | null = null;
   ideaHtmlIds: { [idea: string]: string} = {};
+  trackErrors: { [name: string]: string } = {};
 
   async ngOnInit() {
     this.isLoading = true;
@@ -47,16 +48,13 @@ export class SavedIdeasComponent {
   }
 
   generateImage = async (idea: Idea): Promise<void> => {
-
     const ideaImg: HTMLImageElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} img`);
     const imgLdr: HTMLDivElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} .img-ldr-ctr`);
     const generateImgBtn: HTMLButtonElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} .gen-img-btn`);
     const saveImgBtn: HTMLButtonElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} .save-img-btn`);
-
     if (ideaImg && imgLdr && generateImgBtn && saveImgBtn) {
       generateImgBtn.disabled = true;
       ideaImg.classList.add('hide');
-      imgLdr.classList.remove('hide');
       imgLdr.style.display = 'flex';
       const base64String: boolean | string = await this.openAi.generateImage(idea, 'my-ideas');
       imgLdr.style.display = 'none';
@@ -73,28 +71,36 @@ export class SavedIdeasComponent {
     const ideaImg: HTMLImageElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} img`);
     const saveImgBtn: HTMLButtonElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} .save-img-btn`);
     if (idea.id && ideaImg && ideaImg.src && saveImgBtn) {
+      saveImgBtn.disabled = true;
       const base64String: string = ideaImg.src.replace('data:image/png;base64,', '')
       const appendedImage: AppendedImage = {
         ideaId: parseInt(idea.id),
         image: base64String
       }
       const result: boolean = await this.supabase.appendImage(appendedImage);
-      if (result) {
-        saveImgBtn.disabled = true;
+      if (!result) {
+        this.trackErrors[idea.idea] = "Sorry, there was a problem saving your idea.";
       }
     }
   }
 
   deleteIdea = async (deletedIdea: Idea): Promise<void> => {
+    const deleteBtn: HTMLButtonElement | null = document.querySelector(`#${this.ideaHtmlIds[deletedIdea.idea]} .btn-dlt`);
+    if (deleteBtn) {
+      deleteBtn.disabled = true;
+    };
     const result = await this.supabase.deleteIdea(deletedIdea);
-    console.log(deletedIdea);
-    if (result && this.ideaData && this.userData) {
-      delete this.ideaHtmlIds[deletedIdea.idea];
-      const deleteIndex = this.ideaData.findIndex(existingIdea => existingIdea.idea == deletedIdea.idea);
-      if (deleteIndex !== -1) {
-        const deleteResult = this.ideaData.splice(deleteIndex, 1);
-        console.log(deleteResult)
+    if (result) {
+      if (this.ideaData && this.userData) {
+        delete this.ideaHtmlIds[deletedIdea.idea];
+        const deleteIndex = this.ideaData.findIndex(existingIdea => existingIdea.idea == deletedIdea.idea);
+        if (deleteIndex !== -1) {
+          const deleteResult = this.ideaData.splice(deleteIndex, 1);
+          console.log(deleteResult)
+        }
       }
+    } else {
+      this.trackErrors[deletedIdea.idea] = "Sorry, there was a problem deleting your idea.";
     }
   }
  

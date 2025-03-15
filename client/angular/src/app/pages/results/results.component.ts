@@ -62,16 +62,16 @@ export class ResultsComponent {
     const imgLdr: HTMLDivElement | null = document.querySelector(`#${htmlId} .img-ldr-ctr`);
     if (ideaImg && imgLdr) {
       ideaImg.classList.add('hide');
-      imgLdr.classList.remove('hide');
       imgLdr.style.display = 'flex';
       const response: boolean | string = await this.openAi.generateImage(idea, 'results')
-      if (response === true) {
-        imgLdr.style.display = 'none';
-        ideaImg.classList.remove('hide');
-        ideaImg.classList.add('show');
-        if (this.disableSaveButtons[idea.idea] === true) {
-          this.disableSaveButtons[idea.idea] = false;
-        }
+      imgLdr.style.display = 'none';
+      ideaImg.classList.remove('hide');
+      ideaImg.classList.add('show');
+      if (this.disableSaveButtons[idea.idea] === true) {
+        this.disableSaveButtons[idea.idea] = false;
+      }
+      if (!response) {
+        this.trackErrors[idea.idea] = "Sorry, there was a problem generating your image.";
       }
     }
   }
@@ -80,18 +80,19 @@ export class ResultsComponent {
     if (this.userData) {
       if (!this.trackSavedIdeas.hasOwnProperty(idea.idea)) {
         try {
+          this.disableSaveButtons[idea.idea] = true;
           idea.userId = this.userData.id as string;
           const response: number = await this.supabase.saveIdea(idea);
           this.trackSavedIdeas[idea.idea] = response;
-          this.disableSaveButtons[idea.idea] = true;
         } catch(e) {
           if (e === 409) {
-            this.trackErrors[idea.idea] = "Idea has already been saved.";
+            this.trackErrors[idea.idea] = "This idea has already been saved.";
           } else {
-            this.trackErrors[idea.idea] = "There was a problem saving this idea.";
+            this.trackErrors[idea.idea] = "There was a problem saving your idea.";
           }
         }
       } else {
+        this.disableSaveButtons[idea.idea] = true;
         if (!idea.image) {
           console.error("Cannot find bas64 string for image");
           return;
@@ -101,8 +102,8 @@ export class ResultsComponent {
           image: idea.image 
         }
         const response: boolean = await this.supabase.appendImage(appendedImage);
-        if (response) {
-          this.disableSaveButtons[idea.idea] = true;
+        if (!response) {
+          this.trackErrors[idea.idea] = "There was a problem saving your idea.";
         }
       }
     }
