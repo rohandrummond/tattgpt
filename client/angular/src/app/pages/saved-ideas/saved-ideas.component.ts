@@ -35,7 +35,7 @@ export class SavedIdeasComponent {
 
   async ngOnInit() {
     this.isLoading = true;
-    this.userData =  await this.supabase.getUser();
+    this.userData = await this.supabase.getUser();
     if (this.userData) {
       this.ideaData = await this.supabase.fetchIdeas(this.userData.id);
       if (this.ideaData) {
