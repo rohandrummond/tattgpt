@@ -59,7 +59,7 @@ export class SavedIdeasComponent {
       const base64String: boolean | string = await this.openAi.generateImage(idea, 'my-ideas');
       imgLdr.style.display = 'none';
       ideaImg.src = `data:image/png;base64,${base64String}`;
-      ideaImg.classList.remove('hide');
+      ideaImg.classList.remove('hide', 'card-img-ph');
       ideaImg.classList.add('show');
       generateImgBtn.classList.add('hide');
       saveImgBtn.classList.remove('hide');

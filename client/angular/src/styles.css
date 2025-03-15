@@ -327,6 +327,14 @@ input[type=radio] {
     width: 100%;
 }
 
+.card-img {
+    border-radius: 10px;
+}
+
+.card-img-ph {
+    opacity: 0.6;
+}
+
 .card-btn-ctr {
     display: flex;
     flex-direction: column;
