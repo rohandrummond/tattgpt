@@ -49,6 +49,18 @@ img {
     letter-spacing: 0;
 }
 
+.btn-dlt {
+    font-family: 'Geist', sans-serif;
+    color: #FFFDF9;
+    background-color: #E52020;
+    border: 1px solid #E52020;
+    border-radius: 6px;
+    padding: 10px 25px;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0;
+}
+
 .btn:disabled {
     opacity: 0.6;
     cursor: default;
@@ -130,13 +142,21 @@ img {
 }
 
 .hide {
-    opacity: 0;
-    transition: all 0.25s ease-in-out;
+    display: none;
 }
 
 .show {
     display: unset;
-    opacity: 1;
+}
+
+.no-mp {
+    margin: 0;
+    padding: 0;
+}
+
+.transparent {
+    opacity: 0;
+    transition: all 0.25s ease-in-out;
 }
 
 .link {
@@ -283,6 +303,7 @@ input[type=radio] {
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .card {
@@ -295,13 +316,20 @@ input[type=radio] {
     border-radius: 20px;
 }
 
+.card-img,
+.img-ldr-ctr {
+    height: 200px;
+    width: 100%;
+}
+
 .card-btn-ctr {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
+    margin-top: 10px;
 }
 
-/* Loader */
+/* Loaders */
 
 .ldr-ctr {
     background-color: #000000;
@@ -316,6 +344,24 @@ input[type=radio] {
     width: 50px;
     aspect-ratio: 1;
     --_c:no-repeat radial-gradient(farthest-side,#ffffff 92%,#0000);
+    background: 
+      var(--_c) top,
+      var(--_c) left,
+      var(--_c) right,
+      var(--_c) bottom;
+    background-size: 12px 12px;
+    animation: l7 1s infinite;
+}
+
+.img-ldr-ctr {
+    justify-content: center;
+    align-items: center;
+}
+
+.img-ldr {
+    width: 50px;
+    aspect-ratio: 1;
+    --_c:no-repeat radial-gradient(farthest-side,#000000 92%,#0000);
     background: 
       var(--_c) top,
       var(--_c) left,

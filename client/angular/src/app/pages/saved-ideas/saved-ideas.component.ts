@@ -47,12 +47,22 @@ export class SavedIdeasComponent {
   }
 
   generateImage = async (idea: Idea): Promise<void> => {
-    const base64String: boolean | string = await this.openAi.generateImage(idea, 'my-ideas');
+
     const ideaImg: HTMLImageElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} img`);
+    const imgLdr: HTMLDivElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} .img-ldr-ctr`);
     const generateImgBtn: HTMLButtonElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} .gen-img-btn`);
     const saveImgBtn: HTMLButtonElement | null = document.querySelector(`#${this.ideaHtmlIds[idea.idea]} .save-img-btn`);
-    if (ideaImg && generateImgBtn && saveImgBtn) {
-      ideaImg.src = `data:image/png;base64,${base64String}`
+
+    if (ideaImg && imgLdr && generateImgBtn && saveImgBtn) {
+      generateImgBtn.disabled = true;
+      ideaImg.classList.add('hide');
+      imgLdr.classList.remove('hide');
+      imgLdr.style.display = 'flex';
+      const base64String: boolean | string = await this.openAi.generateImage(idea, 'my-ideas');
+      imgLdr.style.display = 'none';
+      ideaImg.src = `data:image/png;base64,${base64String}`;
+      ideaImg.classList.remove('hide');
+      ideaImg.classList.add('show');
       generateImgBtn.classList.add('hide');
       saveImgBtn.classList.remove('hide');
       saveImgBtn.classList.add('show');
@@ -77,11 +87,13 @@ export class SavedIdeasComponent {
 
   deleteIdea = async (deletedIdea: Idea): Promise<void> => {
     const result = await this.supabase.deleteIdea(deletedIdea);
+    console.log(deletedIdea);
     if (result && this.ideaData && this.userData) {
       delete this.ideaHtmlIds[deletedIdea.idea];
-      const deleteIndex = this.ideaData.findIndex(existingIdea => existingIdea.idea = deletedIdea.idea);
+      const deleteIndex = this.ideaData.findIndex(existingIdea => existingIdea.idea == deletedIdea.idea);
       if (deleteIndex !== -1) {
-        this.ideaData.splice(deleteIndex, 1);
+        const deleteResult = this.ideaData.splice(deleteIndex, 1);
+        console.log(deleteResult)
       }
     }
   }

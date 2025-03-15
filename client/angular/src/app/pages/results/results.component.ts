@@ -56,11 +56,22 @@ export class ResultsComponent {
   }
 
   generateImage = async (idea: Idea): Promise<void> => {
-    const response: boolean | string = await this.openAi.generateImage(idea, 'results')
-    if (response === true) {
-      this.disableImageButtons[idea.idea] = true;
-      if (this.disableSaveButtons[idea.idea] === true) {
-        this.disableSaveButtons[idea.idea] = false;
+    this.disableImageButtons[idea.idea] = true;
+    const htmlId: string = idea.idea.toLowerCase().split(' ').join('-');
+    const ideaImg: HTMLImageElement | null = document.querySelector(`#${htmlId} img`);
+    const imgLdr: HTMLDivElement | null = document.querySelector(`#${htmlId} .img-ldr-ctr`);
+    if (ideaImg && imgLdr) {
+      ideaImg.classList.add('hide');
+      imgLdr.classList.remove('hide');
+      imgLdr.style.display = 'flex';
+      const response: boolean | string = await this.openAi.generateImage(idea, 'results')
+      if (response === true) {
+        imgLdr.style.display = 'none';
+        ideaImg.classList.remove('hide');
+        ideaImg.classList.add('show');
+        if (this.disableSaveButtons[idea.idea] === true) {
+          this.disableSaveButtons[idea.idea] = false;
+        }
       }
     }
   }

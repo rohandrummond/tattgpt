@@ -1,27 +1,35 @@
 <app-loader [isLoading]="isLoading"></app-loader>
 <div class="full-vp flex column ctr">
     <app-nav></app-nav>
-    @if (ideaData) {
-        @if (ideaData.length > 0) {
+    <div class="card-ctr">
+        @if (ideaData && ideaData.length > 0) {
             @for (item of ideaData; track item.id) {
-                <div [id]="ideaHtmlIds[item.idea]">
-                    <p>{{ item.idea }}</p>
-                    <p>{{ item.description }}</p>
-                    <p>{{ item.color }}</p>
-                    <p>{{ item.placement }}</p>
-                    <p>{{ item.size }}</p>
+                <div [id]="ideaHtmlIds[item.idea]" class="card">
+                    <p class="heading-sm">{{ item.idea }}</p>
+                    <p class="body-txt no-mp">{{ item.description }}</p>
+                    <div class="img-ldr-ctr hide">
+                        <div class="img-ldr"></div>
+                    </div>
                     @if (item.image) {
-                        <img [src]="item.image"/>
+                        <img [src]="item.image" class="card-img"/>
                     } @else {
-                        <img src="/assets/images/placeholder.png">
-                        <button (click)="generateImage(item)" class="gen-img-btn">Generate Image</button>
-                        <button (click)="appendImage(item)" class="save-img-btn hide">Save Image</button>
+
+                        <img src="/assets/images/placeholder.png" class="card-img">
                     }
-                    <button (click)="deleteIdea(item)">Delete Idea</button>
+                    <div class="card-btn-ctr"> 
+                        @if (!item.image) {
+                            <button (click)="generateImage(item)" class="btn gen-img-btn">Generate Image</button>
+                            <button (click)="appendImage(item)" class="btn save-img-btn hide">Save Image</button>
+                        } @else {
+                            <button class="btn gen-img-btn" disabled>Generate Image</button>
+                        }
+                        <button class="btn-dlt" (click)="deleteIdea(item)">Delete Idea</button>
+                    </div> 
+    
                 </div>
             }
         } @else {
-            <p>You don't have any saved ideas.</p>
+            <p class="body-txt">You don't have any saved ideas.</p>
         }
-    } 
+    </div>
 </div>

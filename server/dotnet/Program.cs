@@ -216,7 +216,7 @@ namespace TattGPT
                     prompt.Add($"{label}{value}");
                 }
             }
-            string formattedPrompt = string.Join("", prompt) + ". Keep the designs simple and timeless, avoiding overly specific details. Each idea should be concise (1-3 words). The description should be about 200 characters, and provide just enough detail to inspire the design without being overly complex.";
+            string formattedPrompt = string.Join("", prompt) + ". Keep the designs simple and timeless, avoiding overly specific details. Each idea should be concise (1-3 words). The description should be a sentence between 60-80 characters, and provide just enough detail to inspire the design without being overly complex.";
             List<ChatMessage> messages =
             [
                 new UserChatMessage(formattedPrompt),

@@ -2,20 +2,26 @@
     <app-nav></app-nav>
     <div class="card-ctr">
         @for (item of ideaData; track item.idea) {
-            <div class="card">
+            <div class="card" [id]="item.idea.toLowerCase().split(' ').join('-')">
                 <p class="heading-sm">{{ item.idea }}</p>
-                <p class="body-txt">{{ item.description }}</p>
+                <p class="body-txt no-mp">{{ item.description }}</p>
+                <div class="img-ldr-ctr hide">
+                    <div class="img-ldr"></div>
+                </div>
+                @if (item.image) {
+                    <img [src]="'data:image/png;base64,' + item.image" class="card-img"/>
+                } @else {
+                    <img src="/assets/images/placeholder.png" class="card-img">
+                }
                 <div class="card-btn-ctr">
-                    <button (click)="generateImage(item)" [disabled]="disableImageButtons[item.idea]" class="btn-outline card-btn">Generate Image</button>
+                    <button (click)="generateImage(item)" [disabled]="disableImageButtons[item.idea]" class="btn-outline card-btn gen-img-btn">Generate Image</button>
                     @if ((supabase.sessionObservable | async)) {
                         <button (click)="saveIdea(item)" [disabled]="disableSaveButtons[item.idea]" class="btn card-btn">Save Idea</button>
                     } @else {
                         <button (click)="acceptResultsAuthPrompt()" class="btn card-btn">Sign in to save</button>
                     }
                 </div>
-                @if (item.image) {
-                    <img [src]="'data:image/png;base64,' + item.image"/>
-                }
+
                 @if (trackErrors.hasOwnProperty(item.idea)) {
                     <p>{{ trackErrors[item.idea] }}</p>
                 }

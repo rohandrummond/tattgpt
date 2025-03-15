@@ -55,7 +55,7 @@ export class HomeComponent {
             setTimeout(() => {
               secondHeading.style.display = "flex"; 
               typeWord(secondHeading, secondHeadingContent, 0, () => { 
-                const hiddenElements: NodeListOf<HTMLElement> = document.querySelectorAll(".hide");
+                const hiddenElements: NodeListOf<HTMLElement> = document.querySelectorAll(".transparent");
                 hiddenElements.forEach(element => {
                   element.style.opacity = "1";
                 })
