@@ -1,14 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavComponent } from '../../components/nav/nav.component';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   imports: [
     CommonModule,
-    NavComponent,
-    RouterLink
+    NavComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
@@ -18,10 +16,10 @@ export class HomeComponent {
   ngOnInit() {
 
     const firstHeading: HTMLHeadingElement | null = document.querySelector('#first-heading');
-    const firstHeadingContent: string = "Hello.";
+    const firstHeadingContent: string = "HELLO.";
     
     const secondHeading: HTMLHeadingElement | null = document.querySelector('#second-heading');
-    const secondHeadingContent: string = "I'm TattGPT.";
+    const secondHeadingContent: string = "I’M TATTGPT.";
   
     const typingSpeed = 250; 
     const deletingSpeed = 150; 

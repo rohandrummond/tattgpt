@@ -16,16 +16,16 @@
             <input id="password" class="body-txt" formControlName="password" type="text" placeholder="deepseekftw" required>
         </div>
         <button class="btn form-btn" type="submit">Submit</button>
-
-    </form>
-    @if (authError) {
-        <p class="sub-txt form-err">{{ authError }}</p>
-    }
-    <p class="body-txt">
-        @if (formType() == 'register') {
-            Already have an account? Sign in <a class="link" routerLink="/login">here</a>
-        } @else {
-            Don't have an account? Create one <a class="link" routerLink="/register">here</a>
+        @if (authError) {
+            <p class="sub-txt form-err">{{ authError }}</p>
         }
-    </p>
+        <p class="body-txt">
+            @if (formType() == 'register') {
+                Already have an account? Sign in <a class="link" routerLink="/login">here</a>
+            } @else {
+                Don't have an account? Create one <a class="link" routerLink="/register">here</a>
+            }
+        </p>
+    </form>
+
 </div>

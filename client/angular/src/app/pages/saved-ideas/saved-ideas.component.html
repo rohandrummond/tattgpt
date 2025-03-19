@@ -1,13 +1,13 @@
 <app-loader [isLoading]="isLoading"></app-loader>
 <div class="full-vp flex column ctr">
     <app-nav></app-nav>
-    <h1 class="heading-md">Your saved ideas</h1>
+    <h1 class="heading-lg card-ctr-hd">YOUR SAVED IDEAS</h1>
     <div class="card-ctr">
         @if (ideaData && ideaData.length > 0) {
             @for (item of ideaData; track item.id) {
                 <div [id]="ideaHtmlIds[item.idea]" class="card">
                     <p class="heading-sm">{{ item.idea }}</p>
-                    <p class="body-txt no-mp">{{ item.description }}</p>
+                    <p class="body-txt card-desc">{{ item.description }}</p>
                     <div class="img-ldr-ctr hide">
                         <div class="img-ldr"></div>
                     </div>
@@ -27,7 +27,7 @@
                         <button class="btn-dlt" (click)="deleteIdea(item)">Delete Idea</button>
                     </div>
                     @if (trackErrors.hasOwnProperty(item.idea)) {
-                        <p class="sub-txt form-err no-mp">{{ trackErrors[item.idea] }}</p>
+                        <p class="sub-txt form-err">{{ trackErrors[item.idea] }}</p>
                     }
                 </div>
             }

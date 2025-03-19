@@ -2,7 +2,7 @@
 <div class="full-vp flex column ctr">
     <app-nav></app-nav>
     <div class="idea-form-ctr">
-        <h1 class="heading-md form-hd">Generate a tattoo idea</h1>
+        <h1 class="heading-md form-hd">GENERATE A TATTOO IDEA</h1>
         <form [formGroup]="ideaForm" class="idea-form" (ngSubmit)="onFormSubmit()">
             <div class="form-inpt-grp">
                 <label class="form-lbl">Tattoo Style*</label>
@@ -52,10 +52,11 @@
                 <label for="themes" class="form-lbl">Additional info</label>
                 <input class="body-txt" id="themes" formControlName="themes" type="text" placeholder="Placeholder...">
             </div>
-            <button class="btn form-btn" type="submit" [disabled]="isLoading">Submit</button>
+            <button class="btn form-btn idea-form-btn" type="submit" [disabled]="isLoading">Submit</button>
+            @if (formError) {
+                <p class="sub-txt form-err">{{ formError }}</p>
+            }
         </form>
-        @if (formError) {
-            <p class="sub-txt form-err">{{ formError }}</p>
-        }
+
     </div>
 </div>

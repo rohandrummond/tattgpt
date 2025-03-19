@@ -11,15 +11,11 @@ import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.compone
 
 export const routes: Routes = [
     { path: '', component: HomeComponent},
-    { path: 'login', component: LoginComponent},
-    { path: 'register', component: RegisterComponent},
+    { path: 'login', component: LoginComponent, canActivate: [AuthGuardService] },
+    { path: 'register', component: RegisterComponent, canActivate: [AuthGuardService]},
     { path: 'form', component: IdeaFormComponent},
     { path: 'results', component: ResultsComponent},
-    { 
-        path: 'my-ideas', 
-        component: SavedIdeasComponent, 
-        canActivate: [AuthGuardService]
-      },
+    { path: 'my-ideas', component: SavedIdeasComponent, canActivate: [AuthGuardService] },
     { path: 'unauthorized', component: UnauthorizedComponent},
     { path: '**', component: NotFoundComponent}
 ]; 
