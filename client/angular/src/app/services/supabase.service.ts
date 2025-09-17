@@ -9,6 +9,7 @@ import {
   Session,
   AuthChangeEvent,
   User,
+  AuthError,
 } from '@supabase/supabase-js';
 import { Idea } from '../interfaces/idea';
 import { AppendedImage } from '../interfaces/appended-image';
@@ -70,7 +71,11 @@ export class SupabaseService {
       this.authRedirectService.setRedirectUrl('/');
     } catch (e) {
       console.error('Failed to sign up user. ', e);
-      throw new Error();
+      if (e instanceof AuthError) {
+        throw new Error(e.message);
+      } else {
+        throw new Error();
+      }
     }
   };
 
@@ -88,7 +93,11 @@ export class SupabaseService {
       this.authRedirectService.setRedirectUrl('/');
     } catch (e) {
       console.error('Failed to sign in user. ', e);
-      throw new Error();
+      if (e instanceof AuthError) {
+        throw new Error(e.message);
+      } else {
+        throw new Error();
+      }
     }
   };
 
