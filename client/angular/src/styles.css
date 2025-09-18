@@ -63,8 +63,8 @@ img {
 
 .btn-dlt {
   font-family: "Geist", sans-serif;
-  color: var(--white);
-  background-color: #e52020;
+  color: #e52020;
+  background-color: var(--white);
   border: 1px solid #e52020;
   padding: 12px 30px;
   font-size: 14px;
@@ -72,22 +72,12 @@ img {
   letter-spacing: calc(16px * -0.05);
 }
 
-.btn:disabled {
-  opacity: 0.6;
-  cursor: default;
-  pointer-events: none;
-}
-
-.btn-outline:disabled {
+.btn:disabled,
+.btn-outline:disabled,
+.btn-dlt:disabled {
   background-color: #e0e0e0;
   color: #a0a0a0;
   border: 1px solid #d0d0d0;
-  opacity: 0.6;
-  cursor: default;
-  pointer-events: none;
-}
-
-.btn-dlt:disabled {
   opacity: 0.6;
   cursor: default;
   pointer-events: none;
