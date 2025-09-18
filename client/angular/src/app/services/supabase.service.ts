@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { AuthRedirectService } from './authredirect.service';
+import { AuthRedirectService } from './auth-redirect.service';
 import {
   createClient,
   SupabaseClient,
