@@ -1,38 +1,44 @@
 <app-loader [isLoading]="isLoading"></app-loader>
-<div class="full-vp flex column ctr">
-    <app-nav></app-nav>
-    <h1 class="heading-lg card-ctr-hd">YOUR SAVED IDEAS</h1>
-    <div class="card-ctr">
-        @if (ideaData && ideaData.length > 0) {
-            @for (item of ideaData; track item.id) {
-                <div [id]="ideaHtmlIds[item.idea]" class="card">
-                    <p class="heading-sm">{{ item.idea }}</p>
-                    <p class="body-txt card-desc">{{ item.description }}</p>
-                    <div class="img-ldr-ctr hide">
-                        <div class="img-ldr"></div>
-                    </div>
-                    @if (item.image) {
-                        <img [src]="item.image" class="card-img"/>
-                    } @else {
+<div class="flex column ctr">
+  <app-nav></app-nav>
+  <h1 class="heading-lg card-ctr-hd">YOUR SAVED IDEAS</h1>
+  @if (ideaData && ideaData.length > 0) { @for (item of ideaData; track item.id)
+  {
+  <div class="card-ctr">
+    <div [id]="ideaHtmlIds[item.idea]" class="card">
+      <p class="heading-sm">{{ item.idea }}</p>
+      <p class="body-txt card-desc">{{ item.description }}</p>
+      <div class="img-ldr-ctr hide">
+        <div class="img-ldr"></div>
+      </div>
+      @if (item.image) {
+      <img [src]="item.image" class="card-img" />
+      } @else {
 
-                        <img src="/assets/images/placeholder.png" class="card-img card-img-ph">
-                    }
-                    <div class="card-btn-ctr"> 
-                        @if (!item.image) {
-                            <button (click)="generateImage(item)" class="btn-outline gen-img-btn">Generate Image</button>
-                            <button (click)="appendImage(item)" class="btn save-img-btn hide">Save Image</button>
-                        } @else {
-                            <button class="btn gen-img-btn" disabled>Generate Image</button>
-                        }
-                        <button class="btn-dlt" (click)="deleteIdea(item)">Delete Idea</button>
-                    </div>
-                    @if (trackErrors.hasOwnProperty(item.idea)) {
-                        <p class="sub-txt form-err">{{ trackErrors[item.idea] }}</p>
-                    }
-                </div>
-            }
+      <img src="/assets/images/placeholder.png" class="card-img card-img-ph" />
+      }
+      <div class="card-btn-ctr">
+        @if (!item.image) {
+        <button (click)="generateImage(item)" class="btn-outline gen-img-btn">
+          Generate Image
+        </button>
+        <button (click)="appendImage(item)" class="btn save-img-btn hide">
+          Save Image
+        </button>
         } @else {
-            <p class="body-txt">You don't have any saved ideas.</p>
+        <button class="btn gen-img-btn" disabled>Generate Image</button>
         }
+        <button class="btn-dlt" (click)="deleteIdea(item)">Delete Idea</button>
+      </div>
+      @if (trackErrors.hasOwnProperty(item.idea)) {
+      <p class="sub-txt form-err">{{ trackErrors[item.idea] }}</p>
+      }
     </div>
+  </div>
+  } } @else {
+  <p class="body-txt my-ideas-txt">
+    You haven't saved any ideas yet. Click the button below to get generating.
+  </p>
+  }
+  <a href="/generate" class="btn my-ideas-btn">Generate</a>
 </div>

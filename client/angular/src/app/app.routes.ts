@@ -15,7 +15,7 @@ export const routes: Routes = [
   { path: 'info', component: InfoComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'form', component: IdeaFormComponent },
+  { path: 'generate', component: IdeaFormComponent },
   { path: 'results', component: ResultsComponent },
   {
     path: 'my-ideas',

@@ -341,11 +341,11 @@ input[type="radio"] {
   margin-top: 10px;
 }
 
-/* Cards */
+/* My Ideas */
 
 .card-ctr-hd {
   margin-top: 100px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .card-ctr {
@@ -385,6 +385,16 @@ input[type="radio"] {
 .card-btn-ctr button {
   margin-top: 10px;
   width: 50%;
+}
+
+.my-ideas-txt {
+  margin-left: 8px;
+}
+
+.my-ideas-btn {
+  align-self: start;
+  margin-top: 30px;
+  margin-left: 8px;
 }
 
 /* Loaders */

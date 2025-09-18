@@ -8,6 +8,7 @@ import { OpenAiService } from '../../services/openai.service';
 import { Idea } from '../../interfaces/idea';
 import { AppendedImage } from '../../interfaces/appended-image';
 import { NavComponent } from '../../components/nav/nav.component';
+import { slugify } from '../../utils/slugify';
 
 @Component({
   selector: 'app-results',
@@ -55,7 +56,7 @@ export class ResultsComponent {
 
   generateImage = async (idea: Idea): Promise<void> => {
     this.disableImageButtons[idea.idea] = true;
-    const htmlId: string = idea.idea.toLowerCase().split(' ').join('-');
+    const htmlId: string = slugify(idea.idea);
     const ideaImg: HTMLImageElement | null = document.querySelector(
       `#${htmlId} img`
     );
@@ -121,5 +122,9 @@ export class ResultsComponent {
   acceptResultsAuthPrompt = (): void => {
     this.authRedirect.setRedirectUrl('/results');
     this.router.navigate(['/login']);
+  };
+
+  slug = (text: string): string => {
+    return slugify(text);
   };
 }

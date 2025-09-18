@@ -1,7 +1,7 @@
 <nav class="flex row nav-ctr">
   <a routerLink="/" class="body-txt">Home</a>
   <a routerLink="/info" class="body-txt">Info</a>
-  <a routerLink="/form" class="body-txt">Generate</a>
+  <a routerLink="/generate" class="body-txt">Generate</a>
   @if (!(supabase.sessionObservable | async)) {
   <a class="body-txt" (click)="onSignInClick()">Sign in</a>
   } @else {

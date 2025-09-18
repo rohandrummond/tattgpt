@@ -184,7 +184,7 @@ namespace TattGPT
         private static async Task<Supabase.Client> InitialiseSupabase()
         {
             var supabaseUrl = Environment.GetEnvironmentVariable("SUPABASE_URL");
-            var supabaseKey = Environment.GetEnvironmentVariable("SUPABASE_SERVICE_KEY");
+            var supabaseKey = Environment.GetEnvironmentVariable("SUPABASE_KEY");
             if (string.IsNullOrEmpty(supabaseUrl) || string.IsNullOrEmpty(supabaseKey))
             {
                 throw new InvalidOperationException("Supabase API URL or Key is missing. Please set the relevant environment variable.");
