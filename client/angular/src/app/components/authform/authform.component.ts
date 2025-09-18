@@ -22,6 +22,8 @@ export class AuthformComponent {
     password: new FormControl<String | null>(null),
   });
 
+  isLoading: boolean = false;
+
   authError: string | null = null;
 
   async onSubmit(): Promise<void> {
@@ -36,8 +38,10 @@ export class AuthformComponent {
       };
       if (username && email && password) {
         try {
+          this.isLoading = true;
           await this.supabase.signUp(username, email, password);
         } catch (e) {
+          this.isLoading = false;
           if (e instanceof Error && e.message) {
             this.authError = e.message;
           } else {
@@ -55,8 +59,10 @@ export class AuthformComponent {
       };
       if (email && password) {
         try {
+          this.isLoading = true;
           await this.supabase.signIn(email, password);
         } catch (e) {
+          this.isLoading = false;
           if (e instanceof Error && e.message) {
             this.authError = e.message;
           } else {

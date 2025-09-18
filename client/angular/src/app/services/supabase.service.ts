@@ -54,6 +54,7 @@ export class SupabaseService {
 
   signUp = async (username: string, email: string, password: string) => {
     try {
+      document.body.classList.add('cursor-loading');
       const { error } = await this.supabase.auth.signUp({
         email,
         password,
@@ -76,11 +77,14 @@ export class SupabaseService {
       } else {
         throw new Error();
       }
+    } finally {
+      document.body.classList.remove('cursor-loading');
     }
   };
 
   signIn = async (email: string, password: string) => {
     try {
+      document.body.classList.add('cursor-loading');
       const { error } = await this.supabase.auth.signInWithPassword({
         email,
         password,
@@ -98,6 +102,8 @@ export class SupabaseService {
       } else {
         throw new Error();
       }
+    } finally {
+      document.body.classList.remove('cursor-loading');
     }
   };
 

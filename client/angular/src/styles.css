@@ -169,6 +169,10 @@ img {
   text-decoration: underline;
 }
 
+.cursor-loading {
+  cursor: wait;
+}
+
 /* Nav */
 
 .nav-ctr {

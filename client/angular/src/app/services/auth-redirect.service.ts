@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class AuthRedirectService {
   private redirectSubject: BehaviorSubject<string> =
-    new BehaviorSubject<string>('/my-ideas');
+    new BehaviorSubject<string>('/');
   public redirectObservable: Observable<string> =
     this.redirectSubject.asObservable();
   setRedirectUrl(url: string): void {
