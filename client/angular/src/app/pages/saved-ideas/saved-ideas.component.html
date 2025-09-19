@@ -2,9 +2,9 @@
 <div class="flex column ctr">
   <app-nav></app-nav>
   <h1 class="heading-lg card-ctr-hd">YOUR SAVED IDEAS</h1>
-  @if (ideaData && ideaData.length > 0) { @for (item of ideaData; track item.id)
-  {
+  @if (ideaData && ideaData.length > 0) {
   <div class="card-ctr">
+    @for (item of ideaData; track item.id) {
     <div [id]="ideaHtmlIds[item.idea]" class="card">
       <p class="heading-sm">{{ item.idea }}</p>
       <p class="body-txt card-desc">{{ item.description }}</p>
@@ -34,11 +34,12 @@
       <p class="sub-txt form-err">{{ trackErrors[item.idea] }}</p>
       }
     </div>
+    }
   </div>
-  } } @else {
+  } @else {
   <p class="body-txt my-ideas-txt">
     You haven't saved any ideas yet. Click the button below to get generating.
   </p>
-  }
   <a href="/generate" class="btn my-ideas-btn">Generate</a>
+  }
 </div>
