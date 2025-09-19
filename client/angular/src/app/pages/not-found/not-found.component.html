@@ -1,4 +1,12 @@
 <div class="full-vp flex column ctr">
-    <app-nav></app-nav>
-    <app-error [code]="404" [message]="'Page not found.'"></app-error>
+  <app-nav></app-nav>
+  <app-error
+    class="flex column centered error-ctr"
+    [code]="404"
+    [heading]="'PAGE NOT FOUND'"
+    [message]="
+      'Sorry, the URL
+    you\'re requesting doesn\'t exist.'
+    "
+  ></app-error>
 </div>

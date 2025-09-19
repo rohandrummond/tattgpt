@@ -391,6 +391,22 @@ input[type="radio"] {
   margin-left: 8px;
 }
 
+/* Errors */
+
+.error-ctr {
+  flex: 1;
+}
+
+.error-ctr h2 {
+  margin-top: 12px;
+  margin-bottom: 24px;
+}
+
+.error-ctr p {
+  max-width: 350px;
+  text-align: center;
+}
+
 /* Loaders */
 
 .ldr-ctr {

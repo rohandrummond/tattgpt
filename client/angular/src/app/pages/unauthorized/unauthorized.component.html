@@ -1,4 +1,11 @@
 <div class="full-vp flex column ctr">
-    <app-nav></app-nav>
-    <app-error [code]="401" [message]="'You don\'t have permission to view this resource.'"></app-error>
+  <app-nav></app-nav>
+  <app-error
+    class="flex column centered error-ctr"
+    [code]="401"
+    [heading]="'UNAUTHORISED'"
+    [message]="
+      'Seems like you\'re trying to load a page that you don\'t have access to. Make sure your logged in.'
+    "
+  ></app-error>
 </div>
