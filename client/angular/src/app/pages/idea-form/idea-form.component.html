@@ -1,62 +1,103 @@
 <app-loader [isLoading]="isLoading"></app-loader>
 <div class="full-vp flex column ctr">
-    <app-nav></app-nav>
-    <div class="idea-form-ctr">
-        <h1 class="heading-md form-hd">GENERATE A TATTOO IDEA</h1>
-        <form [formGroup]="ideaForm" class="idea-form" (ngSubmit)="onFormSubmit()">
-            <div class="form-inpt-grp">
-                <label class="form-lbl">Tattoo Style*</label>
-                <select id="style" formControlName="style" class="body-txt" [class]="{'form-empty': !ideaForm.get('style')?.value}">
-                    <option value="" disabled selected>Please choose...</option>
-                    <option value="traditional">Traditional (Old School)</option>
-                    <option value="neo-traditional">Neo-traditional</option>
-                    <option value="japanese">Japanese (Irezumi)</option>
-                    <option value="realism">Realism</option>
-                    <option value="blackwork">Blackwork</option>
-                    <option value="geometric">Geometric</option>
-                    <option value="minimalist">Minimalist</option>
-                </select>
-            </div>
-            <div class="form-inpt-grp">
-                <label class="form-lbl">Size*</label>
-                <select id="size" formControlName="size" class="body-txt" [class]="{'form-empty': !ideaForm.get('size')?.value}"> 
-                    <option value="" disabled>Please choose...</option>
-                    <option value="small">Small (less than 3 inches)</option>
-                    <option value="medium">Medium (3 - 6 inches)</option>
-                    <option value="large">Large (6 - 12 inches)</option>
-                    <option value="x-large">Extra Large (12+ inches)</option>
-                    <option value="sleeve">Sleeve</option>
-                </select>
-            </div>
-            <div class="form-inpt-grp">
-                <label class="form-lbl">Area*</label>
-                <select id="area" formControlName="area" class="body-txt" [class]="{'form-empty': !ideaForm.get('area')?.value}">
-                    <option value="" disabled>Please choose...</option>
-                    <option value="upper-arm">Upper arm</option>
-                    <option value="forearm">Forearm</option>
-                    <option value="lower-leg">Lower leg</option>
-                    <option value="upper-leg">Upper leg</option>
-                    <option value="chest">Chest</option>
-                    <option value="stomach">Stomach</option>
-                    <option value="back">Back</option>
-                </select>
-            </div>
-            <div class="form-inpt-grp">
-                <label class="form-lbl">Color*</label>
-                <div class="idea-form-radio-ctr">
-                    <label for="color" class="body-txt"><input id="color" formControlName="color" value="color" type="radio" >Yes</label>
-                    <label for="no-color" class="body-txt"><input id="no-color" formControlName="color" value="black and grey" type="radio" >No</label>
-                </div>
-            </div>
-            <div class="form-inpt-grp">
-                <label for="themes" class="form-lbl">Additional info</label>
-                <input class="body-txt" id="themes" formControlName="themes" type="text" placeholder="Placeholder...">
-            </div>
-            <button class="btn form-btn idea-form-btn" type="submit" [disabled]="isLoading">Submit</button>
-            @if (formError) {
-                <p class="sub-txt form-err">{{ formError }}</p>
-            }
-        </form>
-
-    </div>
+  <app-nav></app-nav>
+  <div class="idea-form-ctr">
+    <h1 class="heading-md form-hd">GENERATE A TATTOO IDEA</h1>
+    <form [formGroup]="ideaForm" class="idea-form" (ngSubmit)="onFormSubmit()">
+      <div class="form-inpt-grp">
+        <label class="form-lbl">Tattoo Style*</label>
+        <select
+          id="style"
+          formControlName="style"
+          class="body-txt"
+          [class]="{ 'form-empty': !ideaForm.get('style')?.value }"
+        >
+          <option value="" disabled selected>Please choose...</option>
+          <option value="traditional">Traditional (Old School)</option>
+          <option value="neo-traditional">Neo-traditional</option>
+          <option value="japanese">Japanese (Irezumi)</option>
+          <option value="realism">Realism</option>
+          <option value="blackwork">Blackwork</option>
+          <option value="geometric">Geometric</option>
+          <option value="minimalist">Minimalist</option>
+        </select>
+      </div>
+      <div class="form-inpt-grp">
+        <label class="form-lbl">Size*</label>
+        <select
+          id="size"
+          formControlName="size"
+          class="body-txt"
+          [class]="{ 'form-empty': !ideaForm.get('size')?.value }"
+        >
+          <option value="" disabled>Please choose...</option>
+          <option value="small">Small (less than 3 inches)</option>
+          <option value="medium">Medium (3 - 6 inches)</option>
+          <option value="large">Large (6 - 12 inches)</option>
+          <option value="x-large">Extra Large (12+ inches)</option>
+          <option value="sleeve">Sleeve</option>
+        </select>
+      </div>
+      <div class="form-inpt-grp">
+        <label class="form-lbl">Area*</label>
+        <select
+          id="area"
+          formControlName="area"
+          class="body-txt"
+          [class]="{ 'form-empty': !ideaForm.get('area')?.value }"
+        >
+          <option value="" disabled>Please choose...</option>
+          <option value="upper-arm">Upper arm</option>
+          <option value="forearm">Forearm</option>
+          <option value="lower-leg">Lower leg</option>
+          <option value="upper-leg">Upper leg</option>
+          <option value="chest">Chest</option>
+          <option value="stomach">Stomach</option>
+          <option value="back">Back</option>
+        </select>
+      </div>
+      <div class="form-inpt-grp">
+        <label class="form-lbl">Color*</label>
+        <div class="idea-form-radio-ctr">
+          <label for="color" class="body-txt"
+            ><input
+              id="color"
+              formControlName="color"
+              value="color"
+              type="radio"
+            />Yes</label
+          >
+          <label for="no-color" class="body-txt"
+            ><input
+              id="no-color"
+              formControlName="color"
+              value="black and grey"
+              type="radio"
+            />No</label
+          >
+        </div>
+      </div>
+      <div class="form-inpt-grp">
+        <label for="themes" class="form-lbl">Additional info</label>
+        <input
+          class="body-txt"
+          id="themes"
+          formControlName="themes"
+          type="text"
+          placeholder="Placeholder..."
+        />
+      </div>
+      <button
+        class="btn form-btn idea-form-btn"
+        type="submit"
+        [disabled]="isLoading"
+      >
+        Submit
+      </button>
+      @if (formError) {
+      <p class="sub-txt form-err">{{ formError }}</p>
+      }
+    </form>
+  </div>
+  <app-footer></app-footer>
 </div>

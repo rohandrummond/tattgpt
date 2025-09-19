@@ -1,17 +1,25 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { SupabaseService } from '../../services/supabase.service';
 import { OpenAiService } from '../../services/openai.service';
 import { User } from '@supabase/supabase-js';
 import { Idea } from '../../interfaces/idea';
 import { AppendedImage } from '../../interfaces/appended-image';
 import { NavComponent } from '../../components/nav/nav.component';
+import { FooterComponent } from '../../components/footer/footer.component';
 import { LoaderComponent } from '../../components/loader/loader.component';
 import { slugify } from '../../utils/slugify';
 
 @Component({
   selector: 'app-saved-ideas',
-  imports: [CommonModule, NavComponent, LoaderComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    NavComponent,
+    LoaderComponent,
+    FooterComponent,
+  ],
   templateUrl: './saved-ideas.component.html',
   styleUrl: './saved-ideas.component.css',
 })

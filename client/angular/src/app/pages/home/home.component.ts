@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavComponent } from '../../components/nav/nav.component';
+import { FooterComponent } from '../../components/footer/footer.component';
 import { TrackAnimationService } from '../../services/track-animation.service';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, NavComponent],
+  imports: [CommonModule, NavComponent, FooterComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })

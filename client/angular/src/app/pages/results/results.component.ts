@@ -8,11 +8,12 @@ import { OpenAiService } from '../../services/openai.service';
 import { Idea } from '../../interfaces/idea';
 import { AppendedImage } from '../../interfaces/appended-image';
 import { NavComponent } from '../../components/nav/nav.component';
+import { FooterComponent } from '../../components/footer/footer.component';
 import { slugify } from '../../utils/slugify';
 
 @Component({
   selector: 'app-results',
-  imports: [CommonModule, NavComponent],
+  imports: [CommonModule, NavComponent, FooterComponent],
   templateUrl: './results.component.html',
   styleUrl: './results.component.css',
 })

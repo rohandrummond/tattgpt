@@ -4,11 +4,18 @@ import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OpenAiService } from '../../services/openai.service';
 import { NavComponent } from '../../components/nav/nav.component';
+import { FooterComponent } from '../../components/footer/footer.component';
 import { LoaderComponent } from '../../components/loader/loader.component';
 
 @Component({
   selector: 'app-idea-form',
-  imports: [ReactiveFormsModule, CommonModule, LoaderComponent, NavComponent],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    LoaderComponent,
+    NavComponent,
+    FooterComponent,
+  ],
   templateUrl: './idea-form.component.html',
   styleUrls: ['./idea-form.component.css'],
 })

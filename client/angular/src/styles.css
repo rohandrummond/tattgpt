@@ -149,7 +149,7 @@ img {
 }
 
 .ctr {
-  padding: 5px 10px 0 10px;
+  padding: 5px 10px 10px 10px;
 }
 
 .hide {
@@ -178,6 +178,17 @@ img {
 .nav-ctr {
   justify-content: space-between;
   align-items: center;
+}
+
+/* Footer */
+
+.footer-ctr {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-links {
+  gap: 20px;
 }
 
 /* Home */
@@ -250,11 +261,11 @@ input {
 }
 
 select {
-  padding: 12px 6px;
+  padding: 8px 6px;
 }
 
 input[type="text"] {
-  padding: 12px;
+  padding: 10px 12px;
 }
 
 input[type="radio"] {
@@ -347,7 +358,7 @@ input[type="radio"] {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 40px 100px;
-  margin-bottom: 40px;
+  margin-bottom: 60px;
 }
 
 .card {
