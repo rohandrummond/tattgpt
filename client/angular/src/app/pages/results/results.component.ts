@@ -94,7 +94,8 @@ export class ResultsComponent {
           this.trackSavedIdeas[idea.idea] = response;
         } catch (e) {
           if (e === 409) {
-            this.trackErrors[idea.idea] = 'This idea has already been saved.';
+            this.trackErrors[idea.idea] =
+              'This is already in your saved ideas list.';
           } else {
             this.trackErrors[idea.idea] =
               'There was a problem saving your idea.';
