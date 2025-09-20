@@ -9,3 +9,52 @@
   <a class="body-txt" (click)="signOut()">Sign out</a>
   }
 </nav>
+
+<header class="mobile-nav-ctr">
+  <img
+    class=""
+    (click)="openMobileOverlay()"
+    src="/assets/images/mobile-nav-open.svg"
+  />
+</header>
+
+<div class="full-vp flex column ctr mobile-nav-overlay">
+  <div class="flex row overlay-header">
+    <img
+      class=""
+      (click)="closeMobileOverlay()"
+      src="/assets/images/mobile-nav-close.svg"
+    />
+  </div>
+  <nav class="flex column overlay-menu">
+    <a routerLink="/" class="heading-sm">HOME</a>
+    <a routerLink="/info" class="heading-sm">INFO</a>
+    <a routerLink="/generate" class="heading-sm">GENERATE</a>
+    @if (!(supabase.sessionObservable | async)) {
+    <a class="heading-sm" (click)="onSignInClick()">SIGN IN</a>
+    } @else {
+    <a routerLink="/my-ideas" class="heading-sm">MY IDEAS</a>
+    <a class="heading-sm" (click)="signOut()">SIGN OUT</a>
+    }
+  </nav>
+  <div class="flex row footer-ctr">
+    <div class="flex row footer-links">
+      <a
+        href="https://github.com/rohandrummond"
+        target="_blank"
+        class="body-txt"
+        >GitHub</a
+      >
+      <a
+        href="https://www.linkedin.com/in/drummondr/"
+        target="_blank"
+        class="body-txt"
+        >LinkedIn</a
+      >
+      <a href="mailto:drummond.rohan@gmail.com" target="_blank" class="body-txt"
+        >Email</a
+      >
+    </div>
+    <p class="body-txt">Rohan Drummond® 2025</p>
+  </div>
+</div>
