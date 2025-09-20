@@ -497,6 +497,18 @@ input[type="radio"] {
     font-size: 100px;
     letter-spacing: calc(100px * -0.05);
   }
+  .about-ctr > div {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .about-hd {
+    font-size: 100px;
+    align-items: flex-start;
+    line-height: 90%;
+  }
+  .about-txt {
+    width: 60vw;
+  }
 }
 
 @media screen and (max-width: 650px) {
@@ -522,5 +534,17 @@ input[type="radio"] {
   .footer-links {
     flex-direction: column;
     gap: 0px;
+  }
+  .about-ctr > div {
+    gap: 20px;
+  }
+  .about-hd {
+    flex-direction: row;
+    gap: 10px;
+  }
+  .about-txt {
+    width: 100%;
+    font-size: 18px;
+    letter-spacing: calc(18px * -0.05);
   }
 }
