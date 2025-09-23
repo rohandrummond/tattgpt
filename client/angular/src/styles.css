@@ -182,7 +182,7 @@ img {
 
 .mobile-nav-ctr {
   display: none;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 .mobile-nav-overlay {
@@ -193,8 +193,13 @@ img {
   z-index: 1;
 }
 
+.mobile-nav-icon {
+  height: 100%;
+  width: auto;
+}
+
 .overlay-header {
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 .overlay-menu {

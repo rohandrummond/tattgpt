@@ -11,8 +11,11 @@
 </nav>
 
 <header class="mobile-nav-ctr">
+  <a routerLink="/"
+    ><img class="mobile-nav-icon" src="/assets/images/icon-dark.svg"
+  /></a>
   <img
-    class=""
+    class="mobile-nav-icon"
     (click)="openMobileOverlay()"
     src="/assets/images/mobile-nav-open.svg"
   />
@@ -20,8 +23,11 @@
 
 <div class="full-vp flex column ctr mobile-nav-overlay">
   <div class="flex row overlay-header">
+    <a routerLink="/"
+      ><img class="mobile-nav-icon" src="/assets/images/icon-light.svg"
+    /></a>
     <img
-      class=""
+      class="mobile-nav-icon"
       (click)="closeMobileOverlay()"
       src="/assets/images/mobile-nav-close.svg"
     />
