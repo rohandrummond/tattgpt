@@ -3,11 +3,10 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { SupabaseService } from '../../services/supabase.service';
 import { AuthRedirectService } from '../../services/auth-redirect.service';
-import { FooterComponent } from '../footer/footer.component';
 
 @Component({
   selector: 'app-nav',
-  imports: [RouterLink, CommonModule, FooterComponent],
+  imports: [RouterLink, CommonModule],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.css',
 })
@@ -42,6 +41,7 @@ export class NavComponent {
   openMobileOverlay = () => {
     this.setDisplay('.mobile-nav-ctr', 'none');
     this.toggleClass('.full-vp.ctr', 'ctr', false);
+    this.toggleClass('.saved-ideas-ctr', 'ctr', false);
     this.setDisplay('app-footer', 'none');
     this.setDisplay('.mobile-nav-overlay', 'flex');
   };
@@ -49,6 +49,7 @@ export class NavComponent {
   closeMobileOverlay = () => {
     this.setDisplay('.mobile-nav-ctr', 'flex');
     this.toggleClass('.full-vp', 'ctr', true);
+    this.toggleClass('.saved-ideas-ctr', 'ctr', true);
     this.setDisplay('app-footer', 'block');
     this.setDisplay('.mobile-nav-overlay', 'none');
   };
