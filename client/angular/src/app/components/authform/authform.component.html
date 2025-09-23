@@ -36,8 +36,17 @@
         required
       />
     </div>
+
     <button class="btn form-btn" type="submit" [disabled]="isLoading">
       Submit
+    </button>
+    <button
+      class="btn-outline btn-oauth"
+      type="button"
+      (click)="signInWithGoogle()"
+    >
+      <img class="oauth-icon" src="/assets/images/google-oauth-icon.png" />
+      Sign {{ formType() == "register" ? "up" : "in" }} with Google
     </button>
     @if (authError) {
     <p class="sub-txt form-err">{{ authError }}</p>

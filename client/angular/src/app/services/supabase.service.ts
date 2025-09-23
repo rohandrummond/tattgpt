@@ -107,6 +107,22 @@ export class SupabaseService {
     }
   };
 
+  signInWithGoogle = async () => {
+    try {
+      const { error } = await this.supabase.auth.signInWithOAuth({
+        provider: 'google',
+      });
+      if (error) throw error;
+    } catch (e) {
+      console.error('Failed to sign in user with OAuth. ', e);
+      if (e instanceof AuthError) {
+        throw new Error(e.message);
+      } else {
+        throw new Error();
+      }
+    }
+  };
+
   signOut = async () => {
     try {
       await this.supabase.auth.signOut();

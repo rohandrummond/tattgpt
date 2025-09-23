@@ -75,4 +75,12 @@ export class AuthformComponent {
       }
     }
   }
+
+  async signInWithGoogle() {
+    try {
+      await this.supabase.signInWithGoogle();
+    } catch {
+      this.authError = 'Sorry, we were unable to authenticate you with Google.';
+    }
+  }
 }
