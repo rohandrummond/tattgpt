@@ -111,7 +111,6 @@ namespace dotnet
           {
             Console.WriteLine($"An error occurred: {ex.Message}");
             return Results.StatusCode(500);
-
           }
         }
         else
