@@ -10,10 +10,10 @@ I’m planning on deploying this in the future, but for now I’m focused on com
 
 ## Tech Stack 👷
 
-__Frontend__: Angular\
-__API__: .NET\
-__Database__: Supabase (PostgreSQL)\
-__AI Models__: OpenAI GPT-5 Mini and DALL·E 3
+- __Frontend__: Angular
+- __API__: .NET
+- __Database__: Supabase (PostgreSQL)
+- __AI Models__: OpenAI GPT-5 Mini and DALL·E 3
 
 ## Features 🚀
 
