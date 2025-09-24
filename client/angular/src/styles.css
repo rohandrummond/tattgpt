@@ -225,6 +225,7 @@ img {
 .footer-ctr {
   justify-content: space-between;
   align-items: center;
+  margin-top: 20px;
 }
 
 .footer-links {

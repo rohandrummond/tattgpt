@@ -1,10 +1,7 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using OpenAI.Chat;
-using OpenAI.Images;
-using Supabase.Postgrest;
 using dotnet.Models;
+using dotnet.Services;
 
 namespace dotnet
 {
@@ -31,6 +28,8 @@ namespace dotnet
                     .AllowAnyMethod();
           });
       });
+      builder.Services.AddSingleton<IOpenAiService, OpenAiService>();
+      builder.Services.AddSingleton<ISupabaseService, SupabaseService>();
       var app = builder.Build();
       app.UseCors("AllowAngularApp");
       app.UseHttpsRedirection();
@@ -41,22 +40,9 @@ namespace dotnet
     // Map API endpoints
     private static void MapRoutes(WebApplication app)
     {
-
-      var (chatClient, imageClient) = InitialiseOpenAI();
-      var supabaseClient = InitialiseSupabase();
-      if (chatClient == null || imageClient == null)
-      {
-        Console.WriteLine("Error initialising Open AI Client");
-        return;
-      }
-      if (supabaseClient == null)
-      {
-        Console.WriteLine("Error initialising Supabase Client");
-        return;
-      }
-
+      
       // Generate Ideas 
-      app.MapPost("/generate-ideas", async (IdeaFormData ideaFormData) =>
+      app.MapPost("/generate-ideas", async (IdeaFormData ideaFormData, IOpenAiService openAi) =>
       {
         try
         {
@@ -64,7 +50,7 @@ namespace dotnet
           {
             return Results.BadRequest(new { message = "No form data submitted " });
           }
-          JsonDocument ideas = await GenerateIdeas(chatClient, ideaFormData);
+          JsonDocument ideas = await openAi.GenerateIdeas(ideaFormData);
           if (ideas == null)
           {
             return Results.BadRequest(new { message = "Problem receiving data from OpenAI API" });
@@ -80,7 +66,7 @@ namespace dotnet
       .WithName("GenerateIdeas");
 
       // Save Idea
-      app.MapPost("/save-idea", async (IdeaData ideaData) =>
+      app.MapPost("/save-idea", async (IdeaData ideaData, ISupabaseService supabase) =>
       {
         try
         {
@@ -88,7 +74,7 @@ namespace dotnet
           {
             return Results.BadRequest(new { message = "No idea data submitted " });
           }
-          var response = await SaveIdea(await supabaseClient, ideaData);
+          var response = await supabase.SaveIdea(ideaData);
           if (response == null)
           {
             return Results.StatusCode(500);
@@ -112,13 +98,13 @@ namespace dotnet
       });
 
       // Delete idea
-      app.MapDelete("/delete-idea", async ([FromBody] IdeaData ideaData) =>
+      app.MapDelete("/delete-idea", async ([FromBody] IdeaData ideaData, ISupabaseService supabase) =>
       {
         if (ideaData.Id != null)
         {
           try
           {
-            await DeleteIdea(await supabaseClient, ideaData.Id);
+            await supabase.DeleteIdea(ideaData.Id);
             return Results.Ok();
           }
           catch (Exception ex)
@@ -137,11 +123,11 @@ namespace dotnet
       .WithName("DeleteIdea");
 
       // Generate Image
-      app.MapPost("/generate-image", async (IdeaData ideaData) =>
+      app.MapPost("/generate-image", async (IdeaData ideaData, IOpenAiService openAi) =>
       {
         try
         {
-          string base64 = await GenerateImage(imageClient, ideaData);
+          string base64 = await openAi.GenerateImage(ideaData);
           return Results.Ok(base64);
         }
         catch (Exception ex)
@@ -153,11 +139,11 @@ namespace dotnet
       .WithName("GenerateImage");
 
       // Append Image
-      app.MapPost("/append-image", async (AppendedImage appendedImage) =>
+      app.MapPost("/append-image", async (AppendedImage appendedImage, ISupabaseService supabase) =>
       {
         try
         {
-          Boolean result = await AppendImage(await supabaseClient, appendedImage);
+          Boolean result = await supabase.AppendImage(appendedImage);
           if (!result)
           {
             return Results.StatusCode(500);
@@ -171,190 +157,6 @@ namespace dotnet
       })
       .WithName("AppendImage");
     }
-
-    // Initialise connection with OpenAI API 
-    private static (ChatClient, ImageClient) InitialiseOpenAI()
-    {
-      var apiKey = Environment.GetEnvironmentVariable("TATTGPT_API_KEY");
-      if (string.IsNullOrEmpty(apiKey))
-      {
-        throw new InvalidOperationException("API key is missing. Please set the TATTGPT_API_KEY environment variable.");
-      }
-      ChatClient chatClient = new ChatClient(model: "gpt-5-mini", apiKey: apiKey);
-      ImageClient imageClient = new("dall-e-3", apiKey: apiKey);
-      return (chatClient, imageClient);
-    }
-
-    // Initialise connection with Supabase API 
-    private static async Task<Supabase.Client> InitialiseSupabase()
-    {
-      var supabaseUrl = Environment.GetEnvironmentVariable("SUPABASE_URL");
-      var supabaseKey = Environment.GetEnvironmentVariable("SUPABASE_KEY");
-      if (string.IsNullOrEmpty(supabaseUrl) || string.IsNullOrEmpty(supabaseKey))
-      {
-        throw new InvalidOperationException("Supabase API URL or Key is missing. Please set the relevant environment variable.");
-      }
-      var supabase = new Supabase.Client(supabaseUrl, supabaseKey);
-      await supabase.InitializeAsync();
-      return supabase;
-    }
-
-    // Idea generation prompt logic
-    private static async Task<JsonDocument> GenerateIdeas(ChatClient client, IdeaFormData ideaFormData)
-    {
-      var prompt = new List<string>
-            {
-                "Generate 3 unique tattoo design concepts "
-            };
-      var promptDetails = new Dictionary<string, string?>
-            {
-                { "for a ", ideaFormData.Style},
-                { " style tattoo, in ", ideaFormData.Color },
-                { ", suitable for a ", ideaFormData.Size },
-                { " size placement on the ", ideaFormData.Area },
-                { ". Incorporate the following context provided by the user: ", ideaFormData.Themes }
-            };
-      foreach (var (label, value) in promptDetails)
-      {
-        if (!string.IsNullOrEmpty(value))
-        {
-          prompt.Add($"{label}{value}");
-        }
-      }
-      string formattedPrompt = string.Join("", prompt) + $". The concepts should be unique, but also play to the strengths of {ideaFormData.Style} tattooing. Each idea should be concise (1-3 words). The description should be a sentence between 60-80 characters, and provide just enough detail to inspire the design without being overly complex.";
-      List<ChatMessage> messages =
-      [
-          new UserChatMessage(formattedPrompt),
-            ];
-      ChatCompletionOptions options = new()
-      {
-        ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
-              jsonSchemaFormatName: "tattoo_ideas",
-              jsonSchema: BinaryData.FromBytes("""
-                    {
-                        "type": "object",
-                        "properties": {
-                            "tattooIdeas": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "idea": { "type": "string" },
-                                        "description": { "type": "string" },
-                                        "style": { "type": "string" },
-                                        "size": { "type": "string" },
-                                        "color": { "type": "string" },
-                                        "placement": { "type": "string" }
-                                    },
-                                    "required": ["idea", "description", "style", "size", "color", "placement"],
-                                    "additionalProperties": false
-                                }
-                            }
-                        },
-                        "required": ["tattooIdeas"],
-                        "additionalProperties": false
-                    }
-                    """u8.ToArray()),
-              jsonSchemaIsStrict: true
-          )
-      };
-      ChatCompletion completion = await client.CompleteChatAsync(messages, options);
-      JsonDocument structuredJsonResponse = JsonDocument.Parse(completion.Content[0].Text);
-      return structuredJsonResponse;
-    }
-
-    // Image generation prompt logic
-    private static async Task<String> GenerateImage(ImageClient client, IdeaData ideaData)
-    {
-      var prompt = new List<string?>
-            {
-                ideaData.Style
-            };
-      var promptDetails = new Dictionary<string, string?>
-            {
-                { " style tattoo design in ", ideaData.Color},
-                { ", suitable for a ", ideaData.Size},
-                { " placement on the ", ideaData.Placement},
-                { ". Here is a more detailed description of the tattoo: ", ideaData.Description  }
-            };
-      foreach (var (label, value) in promptDetails)
-      {
-        prompt.Add($"{label}{value}");
-      }
-      string formattedPrompt = string.Join("", prompt);
-      ImageGenerationOptions options = new()
-      {
-        Size = GeneratedImageSize.W1024xH1024,
-        ResponseFormat = GeneratedImageFormat.Bytes
-      };
-      GeneratedImage image = await client.GenerateImageAsync(formattedPrompt, options);
-      BinaryData bytes = image.ImageBytes;
-      string base64 = Convert.ToBase64String(bytes.ToArray());
-      return base64;
-    }
-
-    // Save idea in Supabase 
-    private static async Task<int?> SaveIdea(Supabase.Client supabaseClient, IdeaData ideaData)
-    {
-      var supabaseIdea = new SupabaseIdeaModel
-      {
-        UserId = ideaData.UserId ?? throw new ArgumentNullException("ideaData.UserID is missing"),
-        Idea = ideaData.Idea ?? throw new ArgumentNullException("ideaData.Idea is missing"),
-        Description = ideaData.Description ?? throw new ArgumentNullException("ideaData.Description is missing"),
-        Placement = ideaData.Placement ?? throw new ArgumentNullException("ideaData.Placement is missing"),
-        Color = ideaData.Color ?? throw new ArgumentNullException("ideaData.Color is missing"),
-        Size = ideaData.Size ?? throw new ArgumentNullException("ideaData.Size is missing"),
-        Image = ideaData.Image
-      };
-      var response = await supabaseClient
-          .From<SupabaseIdeaModel>()
-          .Insert(supabaseIdea, new QueryOptions { Returning = QueryOptions.ReturnType.Representation });
-      if (response.ResponseMessage?.IsSuccessStatusCode != true)
-      {
-        Console.WriteLine("Failed to save idea to Supabase");
-        return null;
-      }
-      int insertedModelId = response.Models[0].Id;
-      return insertedModelId;
-    }
-
-    // Delete idea in Supabase
-    private static async Task DeleteIdea(Supabase.Client supabaseClient, String ideaId)
-    {
-      if (!ideaId.IsNullOrEmpty() && Int32.TryParse(ideaId, out int convertedIdString))
-      {
-        await supabaseClient
-            .From<SupabaseIdeaModel>()
-            .Where(x => x.Id == convertedIdString)
-            .Delete();
-        return;
-      }
-      else
-      {
-        Console.WriteLine("Unable to convert ID string to int.");
-        return;
-      }
-    }
-
-    // Append image to idea in Supabase
-    private static async Task<Boolean> AppendImage(Supabase.Client supabaseClient, AppendedImage appendedImage)
-    {
-      #pragma warning disable CS8603
-      var response = await supabaseClient
-          .From<SupabaseIdeaModel>()
-          .Where(x => x.Id == appendedImage.IdeaId)
-          .Set(x => x.Image, appendedImage.Image)
-          .Update();
-      #pragma warning restore CS8603
-      if (response.ResponseMessage?.IsSuccessStatusCode != true)
-      {
-        Console.WriteLine("Failed to save idea to Supabase");
-        return false;
-      }
-      return true;
-    }
-
-
 
   };
 
