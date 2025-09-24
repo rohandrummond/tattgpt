@@ -44,6 +44,7 @@ img {
   color: var(--white);
   background-color: var(--black);
   border: none;
+  border-radius: 4px;
   padding: 12px 30px;
   font-size: 14px;
   font-weight: 600;
@@ -55,6 +56,7 @@ img {
   color: var(--black);
   background-color: var(--white);
   border: 1px solid var(--black);
+  border-radius: 4px;
   padding: 12px 30px;
   font-size: 14px;
   font-weight: 600;
@@ -66,6 +68,8 @@ img {
   color: #e52020;
   background-color: var(--white);
   border: 1px solid #e52020;
+  border-radius: 4px;
+
   padding: 12px 30px;
   font-size: 14px;
   font-weight: 600;
@@ -294,6 +298,7 @@ input {
   font-family: "Geist", sans-serif;
   background-color: var(--white);
   border: 1px solid var(--black);
+  border-radius: 4px;
 }
 
 select {
