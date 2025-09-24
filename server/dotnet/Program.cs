@@ -4,10 +4,9 @@ using Microsoft.IdentityModel.Tokens;
 using OpenAI.Chat;
 using OpenAI.Images;
 using Supabase.Postgrest;
-using Supabase.Postgrest.Attributes;
-using Supabase.Postgrest.Models;
+using dotnet.Models;
 
-namespace TattGPT
+namespace dotnet
 {
   internal class API
   {
@@ -340,13 +339,13 @@ namespace TattGPT
     // Append image to idea in Supabase
     private static async Task<Boolean> AppendImage(Supabase.Client supabaseClient, AppendedImage appendedImage)
     {
-#pragma warning disable CS8603
+      #pragma warning disable CS8603
       var response = await supabaseClient
           .From<SupabaseIdeaModel>()
           .Where(x => x.Id == appendedImage.IdeaId)
           .Set(x => x.Image, appendedImage.Image)
           .Update();
-#pragma warning restore CS8603
+      #pragma warning restore CS8603
       if (response.ResponseMessage?.IsSuccessStatusCode != true)
       {
         Console.WriteLine("Failed to save idea to Supabase");
@@ -355,63 +354,7 @@ namespace TattGPT
       return true;
     }
 
-    // Define class for handling form data 
-    public class IdeaFormData
-    {
-      public string? Style { get; set; }
-      public string? Color { get; set; }
-      public string? Area { get; set; }
-      public string? Size { get; set; }
-      public string? Themes { get; set; }
-    }
 
-    // Define class for handling idea data
-    public class IdeaData
-    {
-      public string? Id { get; set; }
-      public string? UserId { get; set; }
-      public string? Idea { get; set; }
-      public string? Description { get; set; }
-      public string? Style { get; set; }
-      public string? Size { get; set; }
-      public string? Color { get; set; }
-      public string? Placement { get; set; }
-      public string? Image { get; set; }
-    }
-
-    public class AppendedImage
-    {
-      public required int IdeaId { get; set; }
-      public required string Image { get; set; }
-    }
-
-    [Table("ideas")]
-    public class SupabaseIdeaModel : BaseModel
-    {
-      [PrimaryKey("id", false)]
-      public int Id { get; set; }
-
-      [Column("user_id")]
-      public string? UserId { get; set; }
-
-      [Column("idea")]
-      public string? Idea { get; set; }
-
-      [Column("description")]
-      public string? Description { get; set; }
-
-      [Column("placement")]
-      public string? Placement { get; set; }
-
-      [Column("color")]
-      public string? Color { get; set; }
-
-      [Column("size")]
-      public string? Size { get; set; }
-
-      [Column("image")]
-      public string? Image { get; set; }
-    }
 
   };
 
