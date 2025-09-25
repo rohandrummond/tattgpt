@@ -84,9 +84,17 @@ public class OpenAiService : IOpenAiService
             jsonSchemaIsStrict: true
         )
     };
-    ChatCompletion completion = await chatClient.CompleteChatAsync(messages, options);
-    JsonDocument structuredJsonResponse = JsonDocument.Parse(completion.Content[0].Text);
-    return structuredJsonResponse;
+    try
+    {
+      ChatCompletion completion = await chatClient.CompleteChatAsync(messages, options);
+      JsonDocument structuredJsonResponse = JsonDocument.Parse(completion.Content[0].Text);
+      return structuredJsonResponse;
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine($"Unexpected error: {ex.Message}");
+      throw new InvalidOperationException($"Unexpected error: {ex.Message}");
+    }
   }
 
   // Image generation
@@ -113,9 +121,17 @@ public class OpenAiService : IOpenAiService
       Size = GeneratedImageSize.W1024xH1024,
       ResponseFormat = GeneratedImageFormat.Bytes
     };
-    GeneratedImage image = await imageClient.GenerateImageAsync(formattedPrompt, options);
-    BinaryData bytes = image.ImageBytes;
-    string base64 = Convert.ToBase64String(bytes.ToArray());
-    return base64;
+    try
+    {
+      GeneratedImage image = await imageClient.GenerateImageAsync(formattedPrompt, options);
+      BinaryData bytes = image.ImageBytes;
+      string base64 = Convert.ToBase64String(bytes.ToArray());
+      return base64;
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine($"Unexpected error: {ex.Message}");
+      throw new InvalidOperationException($"Unexpected error: {ex.Message}");
+    }
   }
 }

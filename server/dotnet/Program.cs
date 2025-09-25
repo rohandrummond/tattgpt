@@ -53,7 +53,7 @@ namespace dotnet
           JsonDocument ideas = await openAi.GenerateIdeas(ideaFormData);
           if (ideas == null)
           {
-            return Results.BadRequest(new { message = "Problem receiving data from OpenAI API" });
+            return Results.StatusCode(500);
           }
           return Results.Ok(ideas);
         }

@@ -45,7 +45,7 @@ public class SupabaseService : ISupabaseService
     if (response.ResponseMessage?.IsSuccessStatusCode != true)
     {
       Console.WriteLine("Failed to save idea to Supabase");
-      return null;
+      throw new InvalidOperationException("Failed to save idea to Supabase");
     }
     int insertedModelId = response.Models[0].Id;
     return insertedModelId;
@@ -56,16 +56,24 @@ public class SupabaseService : ISupabaseService
   {
     if (!ideaId.IsNullOrEmpty() && Int32.TryParse(ideaId, out int convertedIdString))
     {
-      await supabaseClient
-          .From<SupabaseIdeaModel>()
-          .Where(x => x.Id == convertedIdString)
-          .Delete();
-      return;
+      try
+      {
+        await supabaseClient
+            .From<SupabaseIdeaModel>()
+            .Where(x => x.Id == convertedIdString)
+            .Delete();
+        return;
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine($"Unexpected error: {ex.Message}");
+        throw new InvalidOperationException($"Unexpected error: {ex.Message}");
+      }
     }
     else
     {
       Console.WriteLine("Unable to convert ID string to int.");
-      return;
+      throw new InvalidOperationException("Unable to convert ID string to int.");
     }
   }
 
@@ -81,8 +89,8 @@ public class SupabaseService : ISupabaseService
       #pragma warning restore CS8603
       if (response.ResponseMessage?.IsSuccessStatusCode != true)
       {
-        Console.WriteLine("Failed to save idea to Supabase");
-        return false;
+        Console.WriteLine("Failed to append image to idea in Supabase");
+        throw new InvalidOperationException("Failed to append image to idea in Supabase");
       }
       return true;
     }
