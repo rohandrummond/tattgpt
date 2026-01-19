@@ -1,3 +1,7 @@
 .DS_Store
 /server/dotnet/bin
 /server/dotnet/obj
+
+# Claude
+CLAUDE.md
+PLAN.md
